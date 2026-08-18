@@ -1,0 +1,1 @@
+function notice(section){alert(section+" is part of the prototype. We will connect it to the real admin/database system next.");}function signIn(){alert("Secure cadet and staff accounts will be added in the next build.");}
