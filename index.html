@@ -1,20 +1,132 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gwynn Park AFJROTC MD-803</title><link rel="stylesheet" href="styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gwynn Park AFJROTC MD-803</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header><div class="brand"><b>MD<br>803</b><span>GWYNN PARK AFJROTC</span></div><button onclick="signIn()">Sign In</button></header>
+<aside class="sidebar">
+  <div class="brand"><div class="mark">MD<br><span>803</span></div><div><strong>GWYNN PARK</strong><small>AFJROTC • MD-803</small></div></div>
+  <div class="role-pill"><span></span><b id="roleLabel">Guest View</b></div>
+  <nav>
+    <button class="nav active" data-page="home">⌂ <span>Dashboard</span></button>
+    <button class="nav" data-page="announcements">▣ <span>Announcements</span></button>
+    <button class="nav" data-page="uniform">✦ <span>Uniform</span></button>
+    <button class="nav" data-page="calendar">◷ <span>Calendar</span></button>
+    <button class="nav" data-page="board">☷ <span>Message Board</span></button>
+    <button class="nav" data-page="resources">▤ <span>Resources</span></button>
+    <button class="nav admin-only hidden" data-page="admin">⚙ <span>Admin</span></button>
+  </nav>
+  <div class="sidebar-foot"><button id="accountBtn" class="account">Sign In</button><small>Presentation build for Gwynn Park High School AFJROTC MD-803.</small></div>
+</aside>
+
+<header class="mobile-top">
+  <div class="brand compact"><div class="mark">MD<br><span>803</span></div><strong>GWYNN PARK AFJROTC</strong></div>
+  <button id="mobileAccount">Sign In</button>
+</header>
+
 <main>
-<p class="eyebrow">MD-803 • CADET INFORMATION HUB</p><h1>Good afternoon.</h1>
-<p class="intro">Everything you need to stay informed, prepared, and involved.</p>
-<section class="hero"><p class="eyebrow light">THIS WEEK</p><h2>Stay ready.<br><span>Stay informed.</span></h2><p>Check announcements, uniform requirements, upcoming events, and cadet resources in one place.</p></section>
-<section class="grid">
-<article><p class="eyebrow">UNIFORM OF THE WEEK</p><h2>Class B</h2><p>Check the uniform page for complete requirements.</p></article>
-<article><p class="eyebrow">ANNOUNCEMENTS</p><h2>Program Updates</h2><p>Official announcements and reminders will appear here.</p></article>
-<article><p class="eyebrow">UPCOMING</p><h2>Calendar</h2><p>Meetings, PT, competitions, service events, and other important dates.</p></article>
+<section id="home" class="page active">
+  <div class="welcome-row">
+    <div><p class="eyebrow">MD-803 • CADET INFORMATION HUB</p><h1 id="welcomeTitle">Welcome.</h1><p class="sub">Everything you need to stay informed, prepared, and involved.</p></div>
+    <div class="view-chip">Viewing as <b id="viewAs">Guest</b></div>
+  </div>
+
+  <div class="hero-grid">
+    <article class="hero">
+      <div><p class="eyebrow pale">THIS WEEK</p><h2>Stay ready.<br><span>Stay informed.</span></h2><p>Check announcements, uniform requirements, upcoming events, resources, and cadet updates in one place.</p></div>
+      <button class="white-btn" data-page="announcements">View updates →</button>
+    </article>
+    <article class="uniform-card">
+      <div class="mini-head"><span>UNIFORM OF THE WEEK</span><b>UOTW</b></div>
+      <h2 id="homeUniformName">Class B</h2><p id="homeUniformDate">Thursday</p><p id="homeUniformNotes">Check the uniform page for complete requirements.</p>
+      <button class="link-btn" data-page="uniform">View details →</button>
+    </article>
+  </div>
+
+  <div class="section-head"><div><p class="eyebrow">LATEST</p><h2>Announcements</h2></div><button class="link-btn" data-page="announcements">See all →</button></div>
+  <div id="homeAnnouncements" class="cards"></div>
+
+  <div class="section-head"><div><p class="eyebrow">UP NEXT</p><h2>Upcoming events</h2></div><button class="link-btn" data-page="calendar">Full calendar →</button></div>
+  <div id="homeEvents" class="event-list"></div>
 </section>
-<nav><button onclick="notice('Announcements')">Announcements</button><button onclick="notice('Uniform')">Uniform</button><button onclick="notice('Calendar')">Calendar</button><button onclick="notice('Message Board')">Message Board</button><button onclick="notice('Resources')">Resources</button></nav>
-</main><footer>Gwynn Park High School • AFJROTC MD-803</footer><script src="app.js"></script>
-</body></html>
+
+<section id="announcements" class="page">
+  <div class="page-head"><p class="eyebrow">PROGRAM UPDATES</p><h1>Announcements</h1><p class="sub">Official information, reminders, and important updates.</p></div>
+  <div id="announcementList" class="cards two"></div>
+</section>
+
+<section id="uniform" class="page">
+  <div class="page-head"><p class="eyebrow">WEEKLY REQUIREMENT</p><h1>Uniform of the Week</h1><p class="sub">One clear place to check what you need before uniform day.</p></div>
+  <article class="uniform-large"><div class="uniform-round">UOTW</div><div><p class="eyebrow pale">CURRENT REQUIREMENT</p><h2 id="uniformName">Class B</h2><p id="uniformDate">Thursday</p><p id="uniformNotes"></p></div></article>
+  <div class="info-grid">
+    <article><span>01</span><h3>Uniform Guide</h3><p id="uniformGuide">Official uniform instructions can be added by an administrator.</p></article>
+    <article><span>02</span><h3>Questions?</h3><p>Ask an instructor or authorized cadet staff member if you are unsure about a requirement.</p></article>
+  </div>
+</section>
+
+<section id="calendar" class="page">
+  <div class="page-head"><p class="eyebrow">SCHEDULE</p><h1>Calendar</h1><p class="sub">Meetings, PT, competitions, service events, deadlines, and more.</p></div>
+  <div id="calendarList" class="event-list"></div>
+</section>
+
+<section id="board" class="page">
+  <div class="page-head"><p class="eyebrow">CADET COMMUNITY</p><h1>Message Board</h1><p class="sub">Approved questions and program discussion.</p></div>
+  <div id="boardNotice" class="notice">Guest mode: you can read posts. Sign in as a cadet to create a post.</div>
+  <form id="postForm" class="compose hidden"><label>New post<textarea id="postText" maxlength="500" placeholder="Write a question or approved update..."></textarea></label><button class="primary" type="submit">Post</button></form>
+  <div id="postList" class="post-list"></div>
+</section>
+
+<section id="resources" class="page">
+  <div class="page-head"><p class="eyebrow">PROGRAM MATERIALS</p><h1>Resources</h1><p class="sub">Handbooks, guides, forms, and approved references.</p></div>
+  <div id="resourceList" class="resource-grid"></div>
+</section>
+
+<section id="admin" class="page">
+  <div class="page-head"><p class="eyebrow">AUTHORIZED STAFF</p><h1>Admin Dashboard</h1><p class="sub">Manage what cadets and guests see.</p></div>
+  <div class="warning"><b>Demo only:</b> this build uses browser storage and a presentation PIN. Real student use will need secure authentication and a shared database.</div>
+  <div id="adminStats" class="stats"></div>
+  <div class="admin-grid">
+    <article class="admin-card">
+      <div class="admin-title"><h3>Uniform of the Week</h3><span>EDIT</span></div>
+      <label>Uniform name<input id="editUniformName"></label>
+      <label>Date / day<input id="editUniformDate"></label>
+      <label>Notes<textarea id="editUniformNotes"></textarea></label>
+      <label>Guide / requirements<textarea id="editUniformGuide"></textarea></label>
+      <button id="saveUniform" class="primary">Save uniform</button>
+    </article>
+    <article class="admin-card">
+      <div class="admin-title"><h3>New Announcement</h3><span>POST</span></div>
+      <label>Title<input id="announcementTitle"></label>
+      <label>Category<input id="announcementCategory" placeholder="General, Uniform, Events..."></label>
+      <label>Message<textarea id="announcementMessage"></textarea></label>
+      <button id="addAnnouncement" class="primary">Publish announcement</button>
+    </article>
+    <article class="admin-card">
+      <div class="admin-title"><h3>Add Event</h3><span>CALENDAR</span></div>
+      <label>Date<input id="eventDate" type="date"></label>
+      <label>Title<input id="eventTitle"></label>
+      <label>Details<textarea id="eventDetails"></textarea></label>
+      <button id="addEvent" class="primary">Add event</button>
+    </article>
+    <article class="admin-card">
+      <div class="admin-title"><h3>Add Resource</h3><span>RESOURCE</span></div>
+      <label>Title<input id="resourceTitle"></label>
+      <label>Description<textarea id="resourceDescription"></textarea></label>
+      <label>Link (optional)<input id="resourceLink" placeholder="https://..."></label>
+      <button id="addResource" class="primary">Add resource</button>
+    </article>
+  </div>
+  <div class="manage-block"><h3>Manage Content</h3><div id="manageAnnouncements"></div><div id="manageEvents"></div><div id="manageResources"></div><div id="managePosts"></div></div>
+</section>
+</main>
+
+<div id="loginModal" class="modal hidden"><div class="modal-box"><button class="close" id="closeLogin">×</button><p class="eyebrow">ACCOUNT ACCESS</p><h2>Choose a view</h2><p class="sub">Guest is public. Cadet and Admin are demo modes for the presentation build.</p><button id="guestLogin" class="secondary full">Continue as Guest</button><button id="cadetLogin" class="primary full">Demo Cadet Account</button><button id="adminLogin" class="dark-outline full">Admin / Instructor</button></div></div>
+<div id="pinModal" class="modal hidden"><div class="modal-box"><button class="close" id="closePin">×</button><p class="eyebrow">ADMIN DEMO</p><h2>Enter admin PIN</h2><p class="sub">Presentation-only access.</p><input id="adminPin" inputmode="numeric" maxlength="6" placeholder="PIN"><button id="submitPin" class="primary full">Continue</button><p class="tiny">Demo PIN: <b>8030</b></p></div></div>
+
+<footer>Gwynn Park High School AFJROTC • MD-803 <span>Version 1 presentation build</span></footer>
+<script src="app.js"></script>
+</body>
+</html>
