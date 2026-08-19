@@ -25,6 +25,7 @@
       <button data-public="board">Message Board</button>
       <button id="groupsNavBtn" data-public="groups" class="hidden">My Groups</button>
       <button data-public="resources">Resources</button>
+      <button data-public="gallery">Gallery</button>
     </nav>
 
     <button id="signInBtn" class="sign-in">Sign In</button>
@@ -194,6 +195,31 @@
         <article class="panel"><div class="panel-title">MY DISCUSSIONS</div><div id="myGroups"></div></article>
         <article class="panel"><div id="groupChatEmpty" class="muted">Choose a discussion to open it.</div><div id="groupChat" class="hidden"><div class="panel-title" id="groupChatTitle"></div><div id="groupMessages" class="group-messages"></div><form id="groupMessageForm"><label>Message<textarea id="groupMessageText" maxlength="2000" required></textarea></label><button class="primary">Send Message</button></form></div></article>
       </div>
+    </section>
+
+    <section id="public-gallery" class="public-page">
+      <div class="page-head">
+        <p class="eyebrow">MD-803 IN ACTION</p>
+        <h1>Photo Gallery</h1>
+        <p>Approved photos from unit activities, service events, competitions, trips, and ceremonies.</p>
+      </div>
+
+      <div id="galleryUploadNotice" class="notice">Sign in with an MD-803 account to upload photos.</div>
+
+      <form id="galleryUploadForm" class="panel hidden">
+        <div class="panel-title">UPLOAD A PHOTO</div>
+        <label>Photo
+          <input id="galleryFile" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" required>
+        </label>
+        <label>Caption
+          <textarea id="galleryCaption" maxlength="300" required placeholder="Example: MD-803 cadets volunteering at the community service event."></textarea>
+        </label>
+        <button class="primary" type="submit">Upload Photo</button>
+        <p class="muted">Uploads are reviewed before appearing publicly.</p>
+        <p id="galleryUploadStatus" class="hidden"></p>
+      </form>
+
+      <div id="publicGallery" class="photo-grid"></div>
     </section>
 
     <section id="public-resources" class="public-page">
@@ -435,8 +461,17 @@
       </section>
 
       <section id="admin-gallery" class="admin-page">
-        <div class="page-head"><h1>Photo Gallery</h1><p>Approved photo uploads will connect to cloud storage later.</p></div>
-        <div class="notice">Gallery page is ready. Storage upload comes after account flow is confirmed.</div>
+        <div class="page-head"><h1>Photo Gallery</h1><p>Review account uploads before they appear in the public gallery.</p></div>
+        <div class="grid2">
+          <article class="panel">
+            <div class="panel-title">PENDING APPROVAL</div>
+            <div id="pendingGallery"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-title">PUBLIC GALLERY</div>
+            <div id="approvedGalleryAdmin"></div>
+          </article>
+        </div>
       </section>
 
       <section id="admin-settings" class="admin-page">
@@ -453,9 +488,9 @@
     </div>
   </section>
 
-  <footer id="publicFooter">Gwynn Park High School AFJROTC • MD-803<br><small>Build: Cadet Dashboard v16</small></footer>
+  <footer id="publicFooter">Gwynn Park High School AFJROTC • MD-803<br><small>Build: Public Gallery v17</small></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=16"></script>
+  <script src="app.js?v=17"></script>
 </body>
 </html>

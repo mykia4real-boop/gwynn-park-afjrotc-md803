@@ -7,6 +7,7 @@ const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;
 
 let sessionUser=null,currentProfile=null,announcements=[],events=[],resources=[],posts=[],activeUniform=null,profiles=[];
 let discussionGroups=[], activeGroupId=null;
+let galleryPhotos=[];
 
 function niceDate(date){
   if(!date)return{day:"--",month:"---",full:""};
@@ -33,6 +34,56 @@ document.addEventListener("click",e=>{
   const b=e.target.closest("[data-public]");
   if(b)showPublic(b.dataset.public);
 });
+
+
+async function loadGallery(){
+  const {data,error}=await sb.from("gallery_photos").select("*").order("created_at",{ascending:false});
+  if(error){ console.error("Gallery load error",error); return; }
+  galleryPhotos=data||[];
+  renderGallery();
+}
+
+function galleryPublicUrl(path){
+  return sb.storage.from("gallery").getPublicUrl(path).data.publicUrl;
+}
+
+function renderGallery(){
+  if(!$("publicGallery")) return;
+
+  const approved=galleryPhotos.filter(p=>p.approved);
+  $("publicGallery").innerHTML=approved.map(p=>`
+    <article class="photo-card">
+      <img src="${galleryPublicUrl(p.storage_path)}" alt="${esc(p.caption||"MD-803 gallery photo")}" loading="lazy">
+      <div class="photo-caption">
+        <p>${esc(p.caption||"")}</p>
+        <small>${new Date(p.created_at).toLocaleDateString()}</small>
+      </div>
+    </article>`).join("")||"<p class='muted'>No gallery photos have been approved yet.</p>";
+
+  if($("pendingGallery")){
+    const pending=galleryPhotos.filter(p=>!p.approved);
+    $("pendingGallery").innerHTML=pending.map(p=>`
+      <div class="gallery-review">
+        <img src="${galleryPublicUrl(p.storage_path)}" alt="">
+        <p>${esc(p.caption||"")}</p>
+        <div class="gallery-actions">
+          <button class="approve-btn" data-approve-photo="${p.id}">Approve</button>
+          <button class="danger" data-delete-photo="${p.id}" data-storage-path="${esc(p.storage_path)}">Delete</button>
+        </div>
+      </div>`).join("")||"<p class='muted'>No photos are waiting for approval.</p>";
+  }
+
+  if($("approvedGalleryAdmin")){
+    $("approvedGalleryAdmin").innerHTML=approved.map(p=>`
+      <div class="gallery-review">
+        <img src="${galleryPublicUrl(p.storage_path)}" alt="">
+        <p>${esc(p.caption||"")}</p>
+        <div class="gallery-actions">
+          <button class="danger" data-delete-photo="${p.id}" data-storage-path="${esc(p.storage_path)}">Remove</button>
+        </div>
+      </div>`).join("")||"<p class='muted'>No public photos yet.</p>";
+  }
+}
 
 async function loadPublicData(){
   const [a,e,u,r,p]=await Promise.all([
@@ -71,6 +122,8 @@ function renderAuth(){
   $("publicPostForm").classList.toggle("hidden",!signedIn);
   $("groupsNavBtn").classList.toggle("hidden",!signedIn);
   $("cadetDashboardNav").classList.toggle("hidden",!signedIn);
+  $("galleryUploadForm").classList.toggle("hidden",!signedIn);
+  $("galleryUploadNotice").textContent=signedIn?"Upload a photo with a caption. It will appear publicly after admin approval.":"Sign in with an MD-803 account to upload photos.";
   if(!signedIn){ discussionGroups=[]; activeGroupId=null; }
   $("boardNotice").textContent=signedIn?`Signed in as ${currentProfile?.full_name||sessionUser.email}.`:"Guest view is read-only.";
 }
@@ -216,6 +269,7 @@ async function openAdmin(){
 }
 
 function renderAdmin(){
+  renderGallery();
   $("dashboardAnnouncementForm").innerHTML=announcementForm();
   $("announcementFormPage").innerHTML=announcementForm();
 
@@ -270,6 +324,7 @@ function renderAdmin(){
 async function refreshAll(reopenAdmin=false){
   await loadPublicData();
   await loadGroups();
+  await loadGallery();
   if(reopenAdmin&&currentProfile&&["admin","instructor"].includes(currentProfile.role))await openAdmin();
 }
 
@@ -489,6 +544,78 @@ $("createAccountForm").onsubmit = async (e) => {
 };
 
 
+
+$("galleryUploadForm").onsubmit=async e=>{
+  e.preventDefault();
+  if(!sessionUser)return alert("Sign in first.");
+
+  const file=$("galleryFile").files[0];
+  const caption=$("galleryCaption").value.trim();
+  const status=$("galleryUploadStatus");
+
+  if(!file||!caption)return;
+  if(file.size>10*1024*1024){
+    status.className="login-error";
+    status.textContent="Photo must be 10 MB or smaller.";
+    return;
+  }
+
+  status.className="";
+  status.textContent="Uploading...";
+
+  const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
+  const path=`${sessionUser.id}/${crypto.randomUUID()}.${ext}`;
+
+  const {error:uploadError}=await sb.storage.from("gallery").upload(path,file,{
+    contentType:file.type||"image/jpeg",
+    upsert:false
+  });
+
+  if(uploadError){
+    status.className="login-error";
+    status.textContent=uploadError.message;
+    return;
+  }
+
+  const {error:rowError}=await sb.from("gallery_photos").insert({
+    uploader_id:sessionUser.id,
+    storage_path:path,
+    caption,
+    approved:false
+  });
+
+  if(rowError){
+    await sb.storage.from("gallery").remove([path]);
+    status.className="login-error";
+    status.textContent=rowError.message;
+    return;
+  }
+
+  e.target.reset();
+  status.className="notice";
+  status.textContent="Uploaded! An admin will review it before it appears publicly.";
+  await loadGallery();
+};
+
+document.addEventListener("click",async e=>{
+  const approve=e.target.closest("[data-approve-photo]");
+  if(approve){
+    const {error}=await sb.from("gallery_photos").update({approved:true}).eq("id",approve.dataset.approvePhoto);
+    if(error)return alert(error.message);
+    await loadGallery();
+    return;
+  }
+
+  const del=e.target.closest("[data-delete-photo]");
+  if(del){
+    const path=del.dataset.storagePath;
+    const {error:rowError}=await sb.from("gallery_photos").delete().eq("id",del.dataset.deletePhoto);
+    if(rowError)return alert(rowError.message);
+    if(path) await sb.storage.from("gallery").remove([path]);
+    await loadGallery();
+  }
+});
+
 $("createGroupForm").onsubmit=async e=>{
   e.preventDefault();
   const memberIds=[...document.querySelectorAll('input[name="groupMember"]:checked')].map(x=>x.value);
@@ -544,5 +671,6 @@ sb.auth.onAuthStateChange(async()=>{await loadSession()});
   await loadSession();
   await loadPublicData();
   await loadGroups();
+  await loadGallery();
 })();
 if($("cadetAccountBtn")) $("cadetAccountBtn").onclick=()=>$("signInBtn").click();
