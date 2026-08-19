@@ -1,7 +1,7 @@
 (()=>{
-  const LOCAL_VERSION="2026.08.19.27";
-  const UPDATED_AT="2026-08-19T18:27:00Z";
-  const SHORT_VERSION="v27";
+  const LOCAL_VERSION="2026.08.19.28";
+  const UPDATED_AT="2026-08-19T19:49:00Z";
+  const SHORT_VERSION="v28";
   const fmt=date=>new Date(date).toLocaleString("en-US",{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"});
 
   function injectStyles(){
