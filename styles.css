@@ -48,3 +48,16 @@
   .public-stats,.public-grid2{grid-template-columns:1fr}
   .public-dashboard-head{align-items:flex-start;gap:12px;flex-direction:column}
 }
+
+
+/* SUPABASE ACCOUNT + AUTH UI */
+.login-error{background:#fff1f1;border:1px solid #efcaca;color:#9b2f2f;border-radius:8px;padding:10px;font-size:12px;margin-top:10px}
+.account-row{display:grid;grid-template-columns:1.4fr 1.4fr .8fr;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid #e8edf2}
+.account-row:last-child{border-bottom:0}
+.account-person b{display:block;font-size:13px}
+.account-person small{color:#6d7c8c;font-size:10px}
+.account-email{color:#536678;font-size:11px;overflow-wrap:anywhere}
+.role-select{margin:0!important;padding:8px!important;font-size:11px}
+.account-status{font-size:9px;color:#1e6a46;background:#e9f7ef;padding:4px 7px;border-radius:10px;font-weight:900}
+.signed-in-chip{display:inline-flex;align-items:center;gap:6px;background:#e9f7ef;color:#1e6a46;border:1px solid #c8e8d5;border-radius:14px;padding:5px 8px;font-size:9px;font-weight:900}
+@media(max-width:700px){.account-row{grid-template-columns:1fr}.account-email{margin-top:-6px}}
