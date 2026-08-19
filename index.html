@@ -31,6 +31,8 @@
     <button id="signInBtn" class="sign-in">Sign In</button>
   </header>
 
+  <div id="siteAlertBanner" class="site-alert-banner hidden"></div>
+
   <main id="publicSite">
     <section id="public-home" class="public-page active">
       <div class="public-dashboard-head">
@@ -270,6 +272,7 @@
       <nav id="adminNav">
         <button data-admin="dashboard" class="active">▦ Dashboard</button>
         <button data-admin="announcements">📣 Announcements</button>
+        <button data-admin="alerts">⚠ Alerts</button>
         <button data-admin="calendar">▣ Calendar</button>
         <button data-admin="uniform">♙ Uniform of the Week</button>
         <button data-admin="accounts">♧ Cadet Accounts</button>
@@ -324,6 +327,35 @@
         <div class="grid2">
           <article class="panel"><div class="panel-title">CREATE ANNOUNCEMENT</div><div id="announcementFormPage"></div></article>
           <article class="panel"><div class="panel-title">ALL ANNOUNCEMENTS</div><div id="allAnnouncements"></div></article>
+        </div>
+      </section>
+
+      <section id="admin-alerts" class="admin-page">
+        <div class="page-head"><h1>Site Alerts</h1><p>Create temporary banners for urgent or important information.</p></div>
+        <div class="grid2">
+          <article class="panel">
+            <div class="panel-title">CREATE ALERT</div>
+            <form id="alertForm">
+              <label>Title<input id="alertTitle" required placeholder="Example: Uniform inspection tomorrow"></label>
+              <label>Message<textarea id="alertMessage" required></textarea></label>
+              <label>Level
+                <select id="alertLevel">
+                  <option value="info">Information</option>
+                  <option value="important">Important</option>
+                  <option value="urgent">Urgent</option>
+                </select>
+              </label>
+              <div class="row">
+                <label>Start<input id="alertStart" type="datetime-local"></label>
+                <label>End<input id="alertEnd" type="datetime-local"></label>
+              </div>
+              <button class="primary">Publish Alert</button>
+            </form>
+          </article>
+          <article class="panel">
+            <div class="panel-title">ACTIVE / SCHEDULED ALERTS</div>
+            <div id="adminAlerts"></div>
+          </article>
         </div>
       </section>
 
@@ -488,9 +520,9 @@
     </div>
   </section>
 
-  <footer id="publicFooter">Gwynn Park High School AFJROTC • MD-803<br><small>Build: Public Gallery v17</small></footer>
+  <footer id="publicFooter">Gwynn Park High School AFJROTC • MD-803<br><small>Build: Alerts v18</small></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=17"></script>
+  <script src="app.js?v=18"></script>
 </body>
 </html>

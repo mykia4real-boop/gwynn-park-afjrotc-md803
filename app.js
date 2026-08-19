@@ -8,6 +8,7 @@ const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;
 let sessionUser=null,currentProfile=null,announcements=[],events=[],resources=[],posts=[],activeUniform=null,profiles=[];
 let discussionGroups=[], activeGroupId=null;
 let galleryPhotos=[];
+let siteAlerts=[];
 
 function niceDate(date){
   if(!date)return{day:"--",month:"---",full:""};
@@ -35,6 +36,39 @@ document.addEventListener("click",e=>{
   if(b)showPublic(b.dataset.public);
 });
 
+
+
+async function loadAlerts(){
+  const {data,error}=await sb.from("site_alerts").select("*").order("created_at",{ascending:false});
+  if(error){ console.error("Alerts load error",error); return; }
+  siteAlerts=data||[];
+  renderAlerts();
+}
+
+function renderAlerts(){
+  const banner=$("siteAlertBanner");
+  if(!banner)return;
+
+  const now=new Date();
+  const active=siteAlerts.filter(a=>a.active && new Date(a.starts_at)<=now && (!a.ends_at || new Date(a.ends_at)>=now));
+  const priority={urgent:3,important:2,info:1};
+  active.sort((x,y)=>(priority[y.level]||0)-(priority[x.level]||0));
+  const top=active[0];
+
+  if(!top){ banner.className="site-alert-banner hidden"; banner.innerHTML=""; }
+  else {
+    const dismissed=sessionStorage.getItem(`dismissed_alert_${top.id}`)==="1";
+    if(dismissed){ banner.className="site-alert-banner hidden"; }
+    else {
+      banner.className=`site-alert-banner ${top.level}`;
+      banner.innerHTML=`<div class="site-alert-inner"><div><b>${esc(top.title)}</b><span>${esc(top.message)}</span></div><button class="site-alert-dismiss" data-dismiss-alert="${top.id}" aria-label="Dismiss alert">×</button></div>`;
+    }
+  }
+
+  if($("adminAlerts")){
+    $("adminAlerts").innerHTML=siteAlerts.map(a=>`<div class="alert-admin-card"><b>${esc(a.title)}</b><span class="alert-level">${esc(a.level)}</span><p>${esc(a.message)}</p><small>${new Date(a.starts_at).toLocaleString()}${a.ends_at?` → ${new Date(a.ends_at).toLocaleString()}`:""}</small><div class="gallery-actions"><button class="danger" data-delete-alert="${a.id}">Delete</button></div></div>`).join("")||"<p class='muted'>No alerts yet.</p>";
+  }
+}
 
 async function loadGallery(){
   const {data,error}=await sb.from("gallery_photos").select("*").order("created_at",{ascending:false});
@@ -270,6 +304,7 @@ async function openAdmin(){
 
 function renderAdmin(){
   renderGallery();
+  renderAlerts();
   $("dashboardAnnouncementForm").innerHTML=announcementForm();
   $("announcementFormPage").innerHTML=announcementForm();
 
@@ -325,6 +360,7 @@ async function refreshAll(reopenAdmin=false){
   await loadPublicData();
   await loadGroups();
   await loadGallery();
+  await loadAlerts();
   if(reopenAdmin&&currentProfile&&["admin","instructor"].includes(currentProfile.role))await openAdmin();
 }
 
@@ -545,6 +581,42 @@ $("createAccountForm").onsubmit = async (e) => {
 
 
 
+
+$("alertForm").onsubmit=async e=>{
+  e.preventDefault();
+  const start=$("alertStart").value ? new Date($("alertStart").value).toISOString() : new Date().toISOString();
+  const end=$("alertEnd").value ? new Date($("alertEnd").value).toISOString() : null;
+  const {error}=await sb.from("site_alerts").insert({
+    title:$("alertTitle").value.trim(),
+    message:$("alertMessage").value.trim(),
+    level:$("alertLevel").value,
+    starts_at:start,
+    ends_at:end,
+    active:true,
+    created_by:sessionUser.id
+  });
+  if(error)return alert(error.message);
+  e.target.reset();
+  await loadAlerts();
+  renderAdmin();
+};
+
+document.addEventListener("click",async e=>{
+  const dismiss=e.target.closest("[data-dismiss-alert]");
+  if(dismiss){
+    sessionStorage.setItem(`dismissed_alert_${dismiss.dataset.dismissAlert}`,"1");
+    renderAlerts();
+    return;
+  }
+  const del=e.target.closest("[data-delete-alert]");
+  if(del){
+    const {error}=await sb.from("site_alerts").delete().eq("id",del.dataset.deleteAlert);
+    if(error)return alert(error.message);
+    await loadAlerts();
+    renderAdmin();
+  }
+});
+
 $("galleryUploadForm").onsubmit=async e=>{
   e.preventDefault();
   if(!sessionUser)return alert("Sign in first.");
@@ -672,5 +744,6 @@ sb.auth.onAuthStateChange(async()=>{await loadSession()});
   await loadPublicData();
   await loadGroups();
   await loadGallery();
+  await loadAlerts();
 })();
 if($("cadetAccountBtn")) $("cadetAccountBtn").onclick=()=>$("signInBtn").click();
