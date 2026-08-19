@@ -1,132 +1,318 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gwynn Park AFJROTC MD-803</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Gwynn Park High School AFJROTC MD-803</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<aside class="sidebar">
-  <div class="brand"><div class="mark">MD<br><span>803</span></div><div><strong>GWYNN PARK</strong><small>AFJROTC • MD-803</small></div></div>
-  <div class="role-pill"><span></span><b id="roleLabel">Guest View</b></div>
-  <nav>
-    <button class="nav active" data-page="home">⌂ <span>Dashboard</span></button>
-    <button class="nav" data-page="announcements">▣ <span>Announcements</span></button>
-    <button class="nav" data-page="uniform">✦ <span>Uniform</span></button>
-    <button class="nav" data-page="calendar">◷ <span>Calendar</span></button>
-    <button class="nav" data-page="board">☷ <span>Message Board</span></button>
-    <button class="nav" data-page="resources">▤ <span>Resources</span></button>
-    <button class="nav admin-only hidden" data-page="admin">⚙ <span>Admin</span></button>
-  </nav>
-  <div class="sidebar-foot"><button id="accountBtn" class="account">Sign In</button><small>Presentation build for Gwynn Park High School AFJROTC MD-803.</small></div>
-</aside>
+  <header class="public-header admin-style-header">
+    <div class="brand public-brand">
+      <div class="crest">803</div>
+      <div>
+        <strong>MD-803 AFJROTC</strong>
+        <small>GWYNN PARK HIGH SCHOOL</small>
+      </div>
+    </div>
+    <nav class="public-nav">
+      <button data-public="home" class="active">Dashboard</button>
+      <button data-public="announcements">Announcements</button>
+      <button data-public="calendar">Calendar</button>
+      <button data-public="uniform">Uniform</button>
+      <button data-public="board">Message Board</button>
+      <button data-public="resources">Resources</button>
+    </nav>
+    <button id="signInBtn" class="sign-in">Sign In</button>
+  </header>
 
-<header class="mobile-top">
-  <div class="brand compact"><div class="mark">MD<br><span>803</span></div><strong>GWYNN PARK AFJROTC</strong></div>
-  <button id="mobileAccount">Sign In</button>
-</header>
+  <main id="publicSite">
+    <section id="public-home" class="public-page active">
+      <div class="public-dashboard-head">
+        <div>
+          <p class="eyebrow">CADET INFORMATION HUB</p>
+          <h1>MD-803 Dashboard</h1>
+          <p>Gwynn Park High School AFJROTC</p>
+        </div>
+        <div class="public-status">PUBLIC VIEW</div>
+      </div>
 
-<main>
-<section id="home" class="page active">
-  <div class="welcome-row">
-    <div><p class="eyebrow">MD-803 • CADET INFORMATION HUB</p><h1 id="welcomeTitle">Welcome.</h1><p class="sub">Everything you need to stay informed, prepared, and involved.</p></div>
-    <div class="view-chip">Viewing as <b id="viewAs">Guest</b></div>
+      <div class="public-stats">
+        <button class="public-stat-card" data-public="announcements">
+          <span class="stat-icon">📣</span><b id="publicAnnouncementCount">0</b><small>Announcements</small>
+        </button>
+        <button class="public-stat-card" data-public="calendar">
+          <span class="stat-icon">▣</span><b id="publicEventCount">0</b><small>Upcoming Events</small>
+        </button>
+        <button class="public-stat-card" data-public="uniform">
+          <span class="stat-icon">♙</span><b id="publicUniformQuick">Class B</b><small>Uniform of the Week</small>
+        </button>
+        <button class="public-stat-card" data-public="resources">
+          <span class="stat-icon">▱</span><b id="publicResourceCount">0</b><small>Resources</small>
+        </button>
+      </div>
+
+      <div class="public-grid2">
+        <article class="public-panel">
+          <div class="public-panel-title">📣 LATEST ANNOUNCEMENTS <button class="text-btn" data-public="announcements">View All</button></div>
+          <div id="publicHomeAnnouncements" class="public-list"></div>
+        </article>
+
+        <article class="public-panel">
+          <div class="public-panel-title">♙ UNIFORM OF THE WEEK <button class="text-btn" data-public="uniform">View Details</button></div>
+          <div class="uniform-dashboard-card">
+            <div class="uniform-badge">UOTW</div>
+            <div>
+              <h2 id="publicUniformName">Class B</h2>
+              <p id="publicUniformDate">Thursday</p>
+              <p id="publicUniformNotes">Check the uniform page for complete requirements.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="public-panel">
+          <div class="public-panel-title">▣ UPCOMING EVENTS <button class="text-btn" data-public="calendar">Full Calendar</button></div>
+          <div id="publicHomeEvents" class="public-list"></div>
+        </article>
+
+        <article class="public-panel">
+          <div class="public-panel-title">QUICK LINKS</div>
+          <div class="quick-links">
+            <button data-public="board">Message Board</button>
+            <button data-public="resources">Resources</button>
+            <button data-public="uniform">Uniform</button>
+            <button id="quickSignIn">Sign In</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="public-announcements" class="public-page">
+      <div class="page-head"><p class="eyebrow">PROGRAM UPDATES</p><h1>Announcements</h1><p>Official information, reminders, and important updates.</p></div>
+      <div id="publicAnnouncements" class="cards two"></div>
+    </section>
+
+    <section id="public-uniform" class="public-page">
+      <div class="page-head"><p class="eyebrow">WEEKLY REQUIREMENT</p><h1>Uniform of the Week</h1><p>Check here before uniform day so you know what is required.</p></div>
+      <article class="uniform-large">
+        <div class="uniform-circle">UOTW</div>
+        <div>
+          <p class="eyebrow light">CURRENT REQUIREMENT</p>
+          <h2 id="uniformName">Class B</h2>
+          <p id="uniformDate"></p>
+          <p id="uniformNotes"></p>
+        </div>
+      </article>
+    </section>
+
+    <section id="public-calendar" class="public-page">
+      <div class="page-head"><p class="eyebrow">SCHEDULE</p><h1>Calendar</h1><p>Field trips, unit events, community service, competitions, meetings, PT, and deadlines.</p></div>
+      <div id="publicEvents" class="event-list"></div>
+    </section>
+
+    <section id="public-board" class="public-page">
+      <div class="page-head"><p class="eyebrow">CADET COMMUNITY</p><h1>Message Board</h1><p>Guests can read approved posts. Signed-in users can participate.</p></div>
+      <div id="boardNotice" class="notice">Guest view is read-only.</div>
+      <form id="publicPostForm" class="panel hidden">
+        <label>Post title<input id="postTitle" maxlength="120" placeholder="Optional"></label>
+        <label>Message<textarea id="postMessage" maxlength="1000" required placeholder="Write your message..."></textarea></label>
+        <button class="primary" type="submit">Post Message</button>
+      </form>
+      <div id="publicPosts" class="post-list"></div>
+    </section>
+
+    <section id="public-resources" class="public-page">
+      <div class="page-head"><p class="eyebrow">PROGRAM MATERIALS</p><h1>Resources</h1><p>Handbooks, forms, guides, and approved links.</p></div>
+      <div id="publicResources" class="resource-grid"></div>
+    </section>
+  </main>
+
+  
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-box">
+      <button id="closeLogin" class="close">×</button>
+      <p class="eyebrow">ACCOUNT ACCESS</p>
+      <h2>Sign in</h2>
+      <p class="muted">Cadets and staff can sign in with their MD-803 account.</p>
+      <form id="loginForm">
+        <label>Email<input id="loginEmail" type="email" autocomplete="email" required></label>
+        <label>Password<input id="loginPassword" type="password" autocomplete="current-password" required></label>
+        <button class="primary full" type="submit">Sign In</button>
+      </form>
+      <p id="loginError" class="login-error hidden"></p>
+      <button id="guestBtn" class="text-btn full center">Continue as Guest</button>
+    </div>
   </div>
 
-  <div class="hero-grid">
-    <article class="hero">
-      <div><p class="eyebrow pale">THIS WEEK</p><h2>Stay ready.<br><span>Stay informed.</span></h2><p>Check announcements, uniform requirements, upcoming events, resources, and cadet updates in one place.</p></div>
-      <button class="white-btn" data-page="announcements">View updates →</button>
-    </article>
-    <article class="uniform-card">
-      <div class="mini-head"><span>UNIFORM OF THE WEEK</span><b>UOTW</b></div>
-      <h2 id="homeUniformName">Class B</h2><p id="homeUniformDate">Thursday</p><p id="homeUniformNotes">Check the uniform page for complete requirements.</p>
-      <button class="link-btn" data-page="uniform">View details →</button>
-    </article>
+  <div id="cadetAccountModal" class="modal hidden">
+    <div class="modal-box">
+      <button id="closeCadetAccount" class="close">×</button>
+      <p class="eyebrow">CADET ACCOUNT</p>
+      <h2 id="cadetAccountName">Cadet Account</h2>
+      <p id="cadetAccountRole" class="muted"></p>
+      <button id="cadetSignOut" class="secondary full">Sign Out</button>
+    </div>
   </div>
 
-  <div class="section-head"><div><p class="eyebrow">LATEST</p><h2>Announcements</h2></div><button class="link-btn" data-page="announcements">See all →</button></div>
-  <div id="homeAnnouncements" class="cards"></div>
+<section id="adminApp" class="admin-shell hidden">
+    <aside class="admin-side">
+      <div class="brand">
+        <div class="crest">803</div>
+        <div><b>MD-803</b><small>ADMIN CONTROL CENTER</small></div>
+      </div>
+      <nav id="adminNav">
+        <button data-admin="dashboard" class="active">▦ Dashboard</button>
+        <button data-admin="announcements">📣 Announcements</button>
+        <button data-admin="calendar">▣ Calendar</button>
+        <button data-admin="uniform">♙ Uniform of the Week</button>
+        <button data-admin="accounts">♧ Cadet Accounts</button>
+        <button data-admin="board">◌ Message Board</button>
+        <button data-admin="resources">▱ Resources</button>
+        <button data-admin="gallery">▧ Photo Gallery</button>
+        <button data-admin="settings">⚙ Settings</button>
+      </nav>
+      <button id="backToSite" class="back-btn">← Back to Public Site</button>
+    </aside>
 
-  <div class="section-head"><div><p class="eyebrow">UP NEXT</p><h2>Upcoming events</h2></div><button class="link-btn" data-page="calendar">Full calendar →</button></div>
-  <div id="homeEvents" class="event-list"></div>
-</section>
+    <div class="admin-main">
+      <header class="admin-top">
+        <div>
+          <h1 id="adminTitle">ADMIN DASHBOARD</h1>
+          <p>Manage content across the MD-803 website</p>
+        </div>
+        <button id="adminSignOut" class="secondary">Sign Out</button>
+      </header>
 
-<section id="announcements" class="page">
-  <div class="page-head"><p class="eyebrow">PROGRAM UPDATES</p><h1>Announcements</h1><p class="sub">Official information, reminders, and important updates.</p></div>
-  <div id="announcementList" class="cards two"></div>
-</section>
+      <section id="admin-dashboard" class="admin-page active">
+        <div id="adminStats" class="stats"></div>
+        <div class="grid2">
+          <article class="panel"><div class="panel-title">CREATE ANNOUNCEMENT</div><div id="dashboardAnnouncementForm"></div></article>
+          <article class="panel"><div class="panel-title">RECENT ANNOUNCEMENTS</div><div id="recentAnnouncements"></div></article>
+          <article class="panel"><div class="panel-title">CALENDAR OVERVIEW</div><div id="calendarOverview"></div></article>
+          <article class="panel"><div class="panel-title">SITE ACTIVITY</div><div id="activityList"></div></article>
+        </div>
+      </section>
 
-<section id="uniform" class="page">
-  <div class="page-head"><p class="eyebrow">WEEKLY REQUIREMENT</p><h1>Uniform of the Week</h1><p class="sub">One clear place to check what you need before uniform day.</p></div>
-  <article class="uniform-large"><div class="uniform-round">UOTW</div><div><p class="eyebrow pale">CURRENT REQUIREMENT</p><h2 id="uniformName">Class B</h2><p id="uniformDate">Thursday</p><p id="uniformNotes"></p></div></article>
-  <div class="info-grid">
-    <article><span>01</span><h3>Uniform Guide</h3><p id="uniformGuide">Official uniform instructions can be added by an administrator.</p></article>
-    <article><span>02</span><h3>Questions?</h3><p>Ask an instructor or authorized cadet staff member if you are unsure about a requirement.</p></article>
-  </div>
-</section>
+      <section id="admin-announcements" class="admin-page">
+        <div class="page-head"><h1>Announcements</h1><p>Create and manage official program announcements.</p></div>
+        <div class="grid2">
+          <article class="panel"><div class="panel-title">CREATE ANNOUNCEMENT</div><div id="announcementFormPage"></div></article>
+          <article class="panel"><div class="panel-title">ALL ANNOUNCEMENTS</div><div id="allAnnouncements"></div></article>
+        </div>
+      </section>
 
-<section id="calendar" class="page">
-  <div class="page-head"><p class="eyebrow">SCHEDULE</p><h1>Calendar</h1><p class="sub">Meetings, PT, competitions, service events, deadlines, and more.</p></div>
-  <div id="calendarList" class="event-list"></div>
-</section>
+      <section id="admin-calendar" class="admin-page">
+        <div class="page-head"><h1>Calendar</h1><p>Add field trips, unit events, community service events, competitions, meetings, PT, deadlines, and more.</p></div>
+        <div class="grid2">
+          <article class="panel">
+            <form id="eventForm">
+              <label>Event title<input id="eventTitle" required></label>
+              <label>Event type
+                <select id="eventType">
+                  <option>Unit Event</option>
+                  <option>Field Trip</option>
+                  <option>Community Service</option>
+                  <option>Drill / Competition</option>
+                  <option>Meeting</option>
+                  <option>PT</option>
+                  <option>Deadline</option>
+                  <option>Other</option>
+                </select>
+              </label>
+              <div class="row">
+                <label>Date<input id="eventDate" type="date" required></label>
+                <label>Time<input id="eventTime" type="time"></label>
+              </div>
+              <label>Location<input id="eventLocation"></label>
+              <label>Description<textarea id="eventDescription"></textarea></label>
+              <button class="primary">＋ Add Event</button>
+            </form>
+          </article>
+          <article class="panel"><div class="panel-title">UPCOMING EVENTS</div><div id="allEvents"></div></article>
+        </div>
+      </section>
 
-<section id="board" class="page">
-  <div class="page-head"><p class="eyebrow">CADET COMMUNITY</p><h1>Message Board</h1><p class="sub">Approved questions and program discussion.</p></div>
-  <div id="boardNotice" class="notice">Guest mode: you can read posts. Sign in as a cadet to create a post.</div>
-  <form id="postForm" class="compose hidden"><label>New post<textarea id="postText" maxlength="500" placeholder="Write a question or approved update..."></textarea></label><button class="primary" type="submit">Post</button></form>
-  <div id="postList" class="post-list"></div>
-</section>
+      <section id="admin-uniform" class="admin-page">
+        <div class="page-head"><h1>Uniform of the Week</h1><p>Update the uniform information cadets see.</p></div>
+        <article class="panel narrow">
+          <form id="uniformForm">
+            <label>Uniform
+              <select id="adminUniformName">
+                <option>Class A</option>
+                <option>Class B</option>
+                <option>OCP / Utility Uniform</option>
+                <option>PT Gear</option>
+                <option>Unit Polo / Civilian Attire</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <label>Wear date<input id="adminUniformDate" type="date"></label>
+            <label>Requirements / notes<textarea id="adminUniformNotes"></textarea></label>
+            <button class="primary">Save Uniform</button>
+          </form>
+        </article>
+      </section>
 
-<section id="resources" class="page">
-  <div class="page-head"><p class="eyebrow">PROGRAM MATERIALS</p><h1>Resources</h1><p class="sub">Handbooks, guides, forms, and approved references.</p></div>
-  <div id="resourceList" class="resource-grid"></div>
-</section>
+      <section id="admin-accounts" class="admin-page">
+        <div class="page-head"><h1>Cadet Accounts</h1><p>View users and change their website role from the dropdown.</p></div>
+        <div class="notice">Role changes are protected by Supabase. Only Admins and Instructors can use these controls.</div>
+        <article class="panel">
+          <div class="panel-title">USER ACCOUNTS</div>
+          <div id="accountList"></div>
+        </article>
+      </section>
 
-<section id="admin" class="page">
-  <div class="page-head"><p class="eyebrow">AUTHORIZED STAFF</p><h1>Admin Dashboard</h1><p class="sub">Manage what cadets and guests see.</p></div>
-  <div class="warning"><b>Demo only:</b> this build uses browser storage and a presentation PIN. Real student use will need secure authentication and a shared database.</div>
-  <div id="adminStats" class="stats"></div>
-  <div class="admin-grid">
-    <article class="admin-card">
-      <div class="admin-title"><h3>Uniform of the Week</h3><span>EDIT</span></div>
-      <label>Uniform name<input id="editUniformName"></label>
-      <label>Date / day<input id="editUniformDate"></label>
-      <label>Notes<textarea id="editUniformNotes"></textarea></label>
-      <label>Guide / requirements<textarea id="editUniformGuide"></textarea></label>
-      <button id="saveUniform" class="primary">Save uniform</button>
-    </article>
-    <article class="admin-card">
-      <div class="admin-title"><h3>New Announcement</h3><span>POST</span></div>
-      <label>Title<input id="announcementTitle"></label>
-      <label>Category<input id="announcementCategory" placeholder="General, Uniform, Events..."></label>
-      <label>Message<textarea id="announcementMessage"></textarea></label>
-      <button id="addAnnouncement" class="primary">Publish announcement</button>
-    </article>
-    <article class="admin-card">
-      <div class="admin-title"><h3>Add Event</h3><span>CALENDAR</span></div>
-      <label>Date<input id="eventDate" type="date"></label>
-      <label>Title<input id="eventTitle"></label>
-      <label>Details<textarea id="eventDetails"></textarea></label>
-      <button id="addEvent" class="primary">Add event</button>
-    </article>
-    <article class="admin-card">
-      <div class="admin-title"><h3>Add Resource</h3><span>RESOURCE</span></div>
-      <label>Title<input id="resourceTitle"></label>
-      <label>Description<textarea id="resourceDescription"></textarea></label>
-      <label>Link (optional)<input id="resourceLink" placeholder="https://..."></label>
-      <button id="addResource" class="primary">Add resource</button>
-    </article>
-  </div>
-  <div class="manage-block"><h3>Manage Content</h3><div id="manageAnnouncements"></div><div id="manageEvents"></div><div id="manageResources"></div><div id="managePosts"></div></div>
-</section>
-</main>
+      <section id="admin-board" class="admin-page">
+        <div class="page-head"><h1>Message Board</h1><p>Moderate cadet posts.</p></div>
+        <article class="panel"><div id="adminPosts"></div></article>
+      </section>
 
-<div id="loginModal" class="modal hidden"><div class="modal-box"><button class="close" id="closeLogin">×</button><p class="eyebrow">ACCOUNT ACCESS</p><h2>Choose a view</h2><p class="sub">Guest is public. Cadet and Admin are demo modes for the presentation build.</p><button id="guestLogin" class="secondary full">Continue as Guest</button><button id="cadetLogin" class="primary full">Demo Cadet Account</button><button id="adminLogin" class="dark-outline full">Admin / Instructor</button></div></div>
-<div id="pinModal" class="modal hidden"><div class="modal-box"><button class="close" id="closePin">×</button><p class="eyebrow">ADMIN DEMO</p><h2>Enter admin PIN</h2><p class="sub">Presentation-only access.</p><input id="adminPin" inputmode="numeric" maxlength="6" placeholder="PIN"><button id="submitPin" class="primary full">Continue</button><p class="tiny">Demo PIN: <b>8030</b></p></div></div>
+      <section id="admin-resources" class="admin-page">
+        <div class="page-head"><h1>Resources</h1><p>Add useful links, forms, and guides.</p></div>
+        <div class="grid2">
+          <article class="panel">
+            <form id="resourceForm">
+              <label>Title<input id="resourceTitle" required></label>
+              <label>Category
+                <select id="resourceCategory">
+                  <option>Forms & Documents</option>
+                  <option>Uniform</option>
+                  <option>Academics</option>
+                  <option>Drill</option>
+                  <option>Leadership</option>
+                  <option>Other</option>
+                </select>
+              </label>
+              <label>Link<input id="resourceLink" placeholder="https://..."></label>
+              <label>Description<textarea id="resourceDescription"></textarea></label>
+              <button class="primary">＋ Add Resource</button>
+            </form>
+          </article>
+          <article class="panel"><div id="adminResources"></div></article>
+        </div>
+      </section>
 
-<footer>Gwynn Park High School AFJROTC • MD-803 <span>Version 1 presentation build</span></footer>
-<script src="app.js"></script>
+      <section id="admin-gallery" class="admin-page">
+        <div class="page-head"><h1>Photo Gallery</h1><p>Approved photo uploads will connect to cloud storage later.</p></div>
+        <div class="notice">This page is ready for the gallery feature, but uploads are intentionally disabled until shared storage is connected.</div>
+      </section>
+
+      <section id="admin-settings" class="admin-page">
+        <div class="page-head"><h1>Settings</h1><p>Website-wide controls.</p></div>
+        <article class="panel narrow">
+          <form id="settingsForm">
+            <label>Site name<input id="siteName"></label>
+            <label>School year<input id="schoolYear"></label>
+            <label>Public message<textarea id="publicMessage"></textarea></label>
+            <button class="primary">Save Settings</button>
+          </form>
+        </article>
+      </section>
+    </div>
+  </section>
+
+  <footer id="publicFooter">Gwynn Park High School AFJROTC • MD-803</footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>
