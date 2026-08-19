@@ -1,6 +1,7 @@
 (()=>{
-  const LOCAL_VERSION="2026.08.19.25";
-  const UPDATED_AT="2026-08-19T18:10:00Z";
+  const LOCAL_VERSION="2026.08.19.26";
+  const UPDATED_AT="2026-08-19T18:18:00Z";
+  const SHORT_VERSION="v26";
   const fmt=date=>new Date(date).toLocaleString("en-US",{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"});
 
   function injectStyles(){
@@ -29,7 +30,7 @@
     const wrap=document.createElement("div");
     wrap.id="siteVersionWrap";
     wrap.innerHTML=`
-      <button id="siteVersionBadge" type="button" aria-expanded="false"><span id="siteVersionDot"></span><span id="siteVersionBadgeText">Site up to date · v25</span></button>
+      <button id="siteVersionBadge" type="button" aria-expanded="false"><span id="siteVersionDot"></span><span id="siteVersionBadgeText">Site up to date · ${SHORT_VERSION}</span></button>
       <div id="siteVersionPanel" class="hidden">
         <h3>Site status</h3>
         <p id="siteVersionStatusText">You are viewing the newest known AFJROTC build.</p>
@@ -38,13 +39,9 @@
         <small id="siteVersionCheckResult">The site checks the live version file, not your browser cache.</small>
       </div>`;
     document.body.appendChild(wrap);
-
     const badge=document.getElementById("siteVersionBadge");
     const panel=document.getElementById("siteVersionPanel");
-    badge.addEventListener("click",()=>{
-      const hidden=panel.classList.toggle("hidden");
-      badge.setAttribute("aria-expanded",String(!hidden));
-    });
+    badge.addEventListener("click",()=>{const hidden=panel.classList.toggle("hidden");badge.setAttribute("aria-expanded",String(!hidden));});
     document.getElementById("siteVersionCheck").addEventListener("click",checkForUpdates);
   }
 
@@ -65,13 +62,10 @@
       }else{
         wrap?.classList.remove("update-available");
         if(text)text.textContent="You are viewing the newest AFJROTC build.";
-        if(badgeText)badgeText.textContent="Site up to date · v25";
+        if(badgeText)badgeText.textContent=`Site up to date · ${SHORT_VERSION}`;
         if(result)result.textContent=`Checked just now · ${fmt(new Date())}`;
       }
-    }catch(err){
-      if(result)result.textContent="Could not verify the live version. Try again in a moment.";
-      console.error("Version check error",err);
-    }
+    }catch(err){if(result)result.textContent="Could not verify the live version. Try again in a moment.";console.error("Version check error",err);}
   }
 
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount,{once:true});else mount();
