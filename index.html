@@ -28,8 +28,20 @@
       <button data-public="gallery">Gallery</button>
     </nav>
 
+    <button id="mobileMenuBtn" class="mobile-menu-btn" aria-expanded="false" aria-controls="mobileNav">Menu</button>
     <button id="signInBtn" class="sign-in">Sign In</button>
   </header>
+  <nav id="mobileNav" class="mobile-nav hidden" aria-label="Mobile navigation">
+    <button data-public="home">Dashboard</button>
+    <button id="mobileCadetDashboard" data-public="cadet-dashboard" class="hidden">My Dashboard</button>
+    <button data-public="announcements">Announcements</button>
+    <button data-public="calendar">Calendar</button>
+    <button data-public="uniform">Uniform</button>
+    <button data-public="board">Message Board</button>
+    <button id="mobileGroupsBtn" data-public="groups" class="hidden">My Groups</button>
+    <button data-public="resources">Resources</button>
+    <button data-public="gallery">Gallery</button>
+  </nav>
 
   <div id="siteAlertBanner" class="site-alert-banner hidden"></div>
 
@@ -520,9 +532,9 @@
     </div>
   </section>
 
-  <footer id="publicFooter">Gwynn Park High School AFJROTC • MD-803<br><small>Build: Alerts v18</small></footer>
+  <footer id="publicFooter">Gwynn Park High School AFJROTC • MD-803<br><small>Build: Final Polish v19</small></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=18"></script>
+  <script src="app.js?v=19"></script>
 </body>
 </html>

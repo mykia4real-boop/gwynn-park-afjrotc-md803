@@ -28,6 +28,8 @@ function showPublic(page){
   document.querySelectorAll(".public-page").forEach(p=>p.classList.remove("active"));
   $("public-"+page)?.classList.add("active");
   document.querySelectorAll("[data-public]").forEach(b=>b.classList.toggle("active",b.dataset.public===page));
+  $("mobileNav").classList.add("hidden");
+  $("mobileMenuBtn").setAttribute("aria-expanded","false");
   window.scrollTo(0,0);
 }
 
@@ -157,6 +159,8 @@ function renderAuth(){
   $("groupsNavBtn").classList.toggle("hidden",!signedIn);
   $("cadetDashboardNav").classList.toggle("hidden",!signedIn);
   $("galleryUploadForm").classList.toggle("hidden",!signedIn);
+  $("mobileCadetDashboard").classList.toggle("hidden",!signedIn);
+  $("mobileGroupsBtn").classList.toggle("hidden",!signedIn);
   $("galleryUploadNotice").textContent=signedIn?"Upload a photo with a caption. It will appear publicly after admin approval.":"Sign in with an MD-803 account to upload photos.";
   if(!signedIn){ discussionGroups=[]; activeGroupId=null; }
   $("boardNotice").textContent=signedIn?`Signed in as ${currentProfile?.full_name||sessionUser.email}.`:"Guest view is read-only.";
@@ -364,6 +368,22 @@ async function refreshAll(reopenAdmin=false){
   if(reopenAdmin&&currentProfile&&["admin","instructor"].includes(currentProfile.role))await openAdmin();
 }
 
+
+$("mobileMenuBtn").onclick=()=>{
+  const opening=$("mobileNav").classList.contains("hidden");
+  $("mobileNav").classList.toggle("hidden");
+  $("mobileMenuBtn").setAttribute("aria-expanded",opening?"true":"false");
+};
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){
+    $("mobileNav").classList.add("hidden");
+    $("mobileMenuBtn").setAttribute("aria-expanded","false");
+    $("loginModal").classList.add("hidden");
+    $("accountModal").classList.add("hidden");
+  }
+});
+
 $("signInBtn").onclick=async()=>{
   if(!sessionUser){
     $("loginModal").classList.remove("hidden");
@@ -391,14 +411,18 @@ $("loginForm").onsubmit=async e=>{
   $("loginError").classList.add("hidden");
   const email=$("loginEmail").value.trim();
   const password=$("loginPassword").value;
+  const submit=e.submitter;
+  if(submit){submit.disabled=true;submit.textContent="Signing In...";}
 
   const {error}=await sb.auth.signInWithPassword({email,password});
   if(error){
+    if(submit){submit.disabled=false;submit.textContent="Sign In";}
     $("loginError").textContent=error.message;
     $("loginError").classList.remove("hidden");
     return;
   }
 
+  if(submit){submit.disabled=false;submit.textContent="Sign In";}
   $("loginModal").classList.add("hidden");
   e.target.reset();
   await loadSession();
