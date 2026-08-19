@@ -7,19 +7,19 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="public-header">
+  <header class="public-header admin-style-header">
     <div class="brand public-brand">
       <div class="crest">803</div>
       <div>
-        <strong>GWYNN PARK AFJROTC</strong>
-        <small>Maryland 803 • Cadet Information Hub</small>
+        <strong>MD-803 AFJROTC</strong>
+        <small>GWYNN PARK HIGH SCHOOL</small>
       </div>
     </div>
     <nav class="public-nav">
-      <button data-public="home" class="active">Home</button>
+      <button data-public="home" class="active">Dashboard</button>
       <button data-public="announcements">Announcements</button>
-      <button data-public="uniform">Uniform</button>
       <button data-public="calendar">Calendar</button>
+      <button data-public="uniform">Uniform</button>
       <button data-public="board">Message Board</button>
       <button data-public="resources">Resources</button>
     </nav>
@@ -28,35 +28,63 @@
 
   <main id="publicSite">
     <section id="public-home" class="public-page active">
-      <div class="hero-public">
+      <div class="public-dashboard-head">
         <div>
-          <p class="eyebrow">MD-803 • CADET INFORMATION HUB</p>
-          <h1>Stay ready.<br><span>Stay informed.</span></h1>
-          <p class="lead">Announcements, uniform information, upcoming events, resources, and cadet communication — all in one place.</p>
-          <div class="hero-actions">
-            <button class="primary" data-public="announcements">View Announcements</button>
-            <button class="secondary" data-public="uniform">Check Uniform</button>
-          </div>
+          <p class="eyebrow">CADET INFORMATION HUB</p>
+          <h1>MD-803 Dashboard</h1>
+          <p>Gwynn Park High School AFJROTC</p>
         </div>
-        <article class="uniform-highlight">
-          <p class="eyebrow">UNIFORM OF THE WEEK</p>
-          <h2 id="publicUniformName">Class B</h2>
-          <p id="publicUniformDate">Thursday</p>
-          <p id="publicUniformNotes">Check the uniform page for complete requirements.</p>
+        <div class="public-status">PUBLIC VIEW</div>
+      </div>
+
+      <div class="public-stats">
+        <button class="public-stat-card" data-public="announcements">
+          <span class="stat-icon">📣</span><b id="publicAnnouncementCount">0</b><small>Announcements</small>
+        </button>
+        <button class="public-stat-card" data-public="calendar">
+          <span class="stat-icon">▣</span><b id="publicEventCount">0</b><small>Upcoming Events</small>
+        </button>
+        <button class="public-stat-card" data-public="uniform">
+          <span class="stat-icon">♙</span><b id="publicUniformQuick">Class B</b><small>Uniform of the Week</small>
+        </button>
+        <button class="public-stat-card" data-public="resources">
+          <span class="stat-icon">▱</span><b id="publicResourceCount">0</b><small>Resources</small>
+        </button>
+      </div>
+
+      <div class="public-grid2">
+        <article class="public-panel">
+          <div class="public-panel-title">📣 LATEST ANNOUNCEMENTS <button class="text-btn" data-public="announcements">View All</button></div>
+          <div id="publicHomeAnnouncements" class="public-list"></div>
+        </article>
+
+        <article class="public-panel">
+          <div class="public-panel-title">♙ UNIFORM OF THE WEEK <button class="text-btn" data-public="uniform">View Details</button></div>
+          <div class="uniform-dashboard-card">
+            <div class="uniform-badge">UOTW</div>
+            <div>
+              <h2 id="publicUniformName">Class B</h2>
+              <p id="publicUniformDate">Thursday</p>
+              <p id="publicUniformNotes">Check the uniform page for complete requirements.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="public-panel">
+          <div class="public-panel-title">▣ UPCOMING EVENTS <button class="text-btn" data-public="calendar">Full Calendar</button></div>
+          <div id="publicHomeEvents" class="public-list"></div>
+        </article>
+
+        <article class="public-panel">
+          <div class="public-panel-title">QUICK LINKS</div>
+          <div class="quick-links">
+            <button data-public="board">Message Board</button>
+            <button data-public="resources">Resources</button>
+            <button data-public="uniform">Uniform</button>
+            <button id="quickSignIn">Sign In</button>
+          </div>
         </article>
       </div>
-
-      <div class="section-title">
-        <div><p class="eyebrow">LATEST</p><h2>Announcements</h2></div>
-        <button class="text-btn" data-public="announcements">See all →</button>
-      </div>
-      <div id="publicHomeAnnouncements" class="cards"></div>
-
-      <div class="section-title">
-        <div><p class="eyebrow">UP NEXT</p><h2>Upcoming Events</h2></div>
-        <button class="text-btn" data-public="calendar">Full calendar →</button>
-      </div>
-      <div id="publicHomeEvents" class="event-list"></div>
     </section>
 
     <section id="public-announcements" class="public-page">
@@ -283,6 +311,6 @@
   </section>
 
   <footer id="publicFooter">Gwynn Park High School AFJROTC • MD-803</footer>
-  <script src="app.js?v=8"></script>
+  <script src="app.js?v=9"></script>
 </body>
 </html>

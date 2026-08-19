@@ -58,6 +58,11 @@ function announcementForm(){
   </form>`;
 }
 function renderPublic(){
+  $("publicAnnouncementCount").textContent=state.announcements.length;
+  $("publicEventCount").textContent=state.events.length;
+  $("publicResourceCount").textContent=state.resources.length;
+  $("publicUniformQuick").textContent=state.uniform.name;
+
   $("publicUniformName").textContent=state.uniform.name;
   $("publicUniformDate").textContent=niceDate(state.uniform.date).full;
   $("publicUniformNotes").textContent=state.uniform.notes;
@@ -190,3 +195,6 @@ $("settingsForm").onsubmit=e=>{
 };
 
 renderAll();
+
+const quickSignIn = $("quickSignIn");
+if (quickSignIn) quickSignIn.onclick = () => $("loginModal").classList.remove("hidden");
