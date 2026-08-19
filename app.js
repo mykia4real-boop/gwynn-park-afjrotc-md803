@@ -366,6 +366,41 @@ document.addEventListener("click",async e=>{
   await refreshAll(true);
 });
 
+
+$("createAccountForm").onsubmit = async (e) => {
+  e.preventDefault();
+
+  const status = $("createAccountStatus");
+  const button = e.submitter;
+  status.className = "";
+  status.textContent = "Creating account...";
+  if (button) button.disabled = true;
+
+  const payload = {
+    full_name: $("newAccountName").value.trim(),
+    email: $("newAccountEmail").value.trim(),
+    password: $("newAccountPassword").value,
+    role: $("newAccountRole").value
+  };
+
+  const { data, error } = await sb.functions.invoke("create-md803-user", {
+    body: payload
+  });
+
+  if (button) button.disabled = false;
+
+  if (error || data?.error) {
+    status.className = "login-error";
+    status.textContent = data?.error || error?.message || "Could not create account.";
+    return;
+  }
+
+  status.className = "notice";
+  status.textContent = `Account created for ${payload.full_name}.`;
+  e.target.reset();
+  await openAdmin();
+};
+
 $("settingsForm").onsubmit=e=>{
   e.preventDefault();
   alert("Settings page is ready. Site-wide settings storage is the next database table we’ll add.");

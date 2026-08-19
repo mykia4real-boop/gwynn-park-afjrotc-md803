@@ -287,10 +287,31 @@
       <section id="admin-accounts" class="admin-page">
         <div class="page-head"><h1>Cadet Accounts</h1><p>View users and change their role from the dropdown.</p></div>
         <div class="notice">Only Admins and Instructors can change roles.</div>
-        <article class="panel">
-          <div class="panel-title">USER ACCOUNTS</div>
-          <div id="accountList"></div>
-        </article>
+        <div class="grid2">
+          <article class="panel">
+            <div class="panel-title">CREATE NEW ACCOUNT</div>
+            <form id="createAccountForm">
+              <label>Full name<input id="newAccountName" required placeholder="Cadet or staff member name"></label>
+              <label>Email<input id="newAccountEmail" type="email" required placeholder="name@example.com"></label>
+              <label>Temporary password<input id="newAccountPassword" type="password" minlength="8" required placeholder="At least 8 characters"></label>
+              <label>Role
+                <select id="newAccountRole">
+                  <option value="cadet">Cadet</option>
+                  <option value="staff">Staff</option>
+                  <option value="admin">Admin</option>
+                  <option value="instructor">Instructor</option>
+                </select>
+              </label>
+              <button class="primary" type="submit">Create Account</button>
+              <p class="muted">Give the temporary password directly to the user. Do not post passwords on the website.</p>
+              <p id="createAccountStatus" class="hidden"></p>
+            </form>
+          </article>
+          <article class="panel">
+            <div class="panel-title">USER ACCOUNTS</div>
+            <div id="accountList"></div>
+          </article>
+        </div>
       </section>
 
       <section id="admin-board" class="admin-page">
@@ -342,9 +363,9 @@
     </div>
   </section>
 
-  <footer id="publicFooter">Gwynn Park High School AFJROTC • MD-803<br><small>Build: Supabase Stable v12</small></footer>
+  <footer id="publicFooter">Gwynn Park High School AFJROTC • MD-803<br><small>Build: Account Management v13</small></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=13"></script>
 </body>
 </html>
