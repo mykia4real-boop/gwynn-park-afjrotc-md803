@@ -1,6 +1,7 @@
 (()=>{
   const ADMIN_ROLES=["command_staff","instructor"];
   const canAdmin=()=>!!currentProfile&&ADMIN_ROLES.includes(currentProfile.role);
+  const compactAdminLabel=()=>window.matchMedia("(max-width:720px)").matches?"Admin":"Admin Control Center";
 
   function syncAdminLink(){
     const header=document.querySelector(".public-header");
@@ -10,10 +11,11 @@
       btn=document.createElement("button");
       btn.id="adminPortalBtn";
       btn.className="sign-in hidden";
-      btn.textContent="Admin Control Center";
       btn.addEventListener("click",()=>{window.location.href="/admin.html";});
       header.insertBefore(btn,document.getElementById("signInBtn"));
     }
+    btn.textContent=compactAdminLabel();
+    btn.setAttribute("aria-label","Open Admin Control Center");
     btn.classList.toggle("hidden",!canAdmin());
   }
 
@@ -37,5 +39,6 @@
     };
   }
 
+  window.addEventListener("resize",syncAdminLink,{passive:true});
   setTimeout(syncAdminLink,0);
 })();
