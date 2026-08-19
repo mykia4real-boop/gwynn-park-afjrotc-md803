@@ -22,3 +22,16 @@
 @media(max-height:760px){
   .admin-side nav button{padding:9px 11px}
 }
+
+/* v16 CADET DASHBOARD */
+.cadet-welcome{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,#0b1b31,#1d4f91);color:#fff;border-radius:14px;padding:26px;margin-bottom:16px}
+.cadet-welcome h1{font-size:34px;margin:0 0 4px}
+.cadet-welcome p:last-child{color:#d8e3ee;margin:0}
+.cadet-dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cadet-panel{background:#fff;border:1px solid #dde4ec;border-radius:11px;padding:18px;min-height:210px}
+.cadet-panel .card,.cadet-panel .event,.cadet-panel .resource-card{border:0;border-bottom:1px solid #e8edf2;border-radius:0;padding:10px 0;background:transparent}
+.cadet-panel .card:last-child,.cadet-panel .event:last-child,.cadet-panel .resource-card:last-child{border-bottom:0}
+.cadet-mini-group{border:1px solid #e0e8ef;border-radius:8px;padding:10px;margin-bottom:8px}
+.cadet-mini-group b{display:block}
+.cadet-mini-group small{color:#687586}
+@media(max-width:920px){.cadet-dashboard-grid{grid-template-columns:1fr}.cadet-welcome{align-items:flex-start;flex-direction:column;gap:14px}}

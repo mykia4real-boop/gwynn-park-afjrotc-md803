@@ -70,6 +70,7 @@ function renderAuth(){
   if($("quickSignIn"))$("quickSignIn").textContent=signedIn?"My Account":"Sign In";
   $("publicPostForm").classList.toggle("hidden",!signedIn);
   $("groupsNavBtn").classList.toggle("hidden",!signedIn);
+  $("cadetDashboardNav").classList.toggle("hidden",!signedIn);
   if(!signedIn){ discussionGroups=[]; activeGroupId=null; }
   $("boardNotice").textContent=signedIn?`Signed in as ${currentProfile?.full_name||sessionUser.email}.`:"Guest view is read-only.";
 }
@@ -103,6 +104,7 @@ function renderPublic(){
   }).join("")||"<p>No events yet.</p>";
 
   $("publicPosts").innerHTML=posts.map(p=>`<article class="post"><b>${esc(p.title||"Cadet Post")}</b><p>${esc(p.message)}</p></article>`).join("")||"<p>No approved posts yet.</p>";
+  renderCadetDashboard();
   $("publicResources").innerHTML=resources.map(r=>`<article class="resource-card"><p class="eyebrow">${esc(r.category)}</p><h3>${esc(r.title)}</h3><p>${esc(r.description)}</p>${r.url?`<a href="${esc(r.url)}" target="_blank" rel="noopener">Open resource →</a>`:""}</article>`).join("")||"<p>No resources yet.</p>";
 }
 
@@ -113,6 +115,7 @@ async function loadGroups(){
   if(error){ console.error(error); return; }
   discussionGroups=data||[];
   renderGroups();
+  renderCadetDashboard();
 }
 
 function renderGroups(){
@@ -138,6 +141,30 @@ async function openGroup(groupId){
   }
   $("groupMessages").innerHTML=(data||[]).map(m=>`<div class="group-message"><b>${esc(names[m.author_id]||"Member")}</b><small>${new Date(m.created_at).toLocaleString()}</small><p>${esc(m.message)}</p></div>`).join("")||"<p class='muted'>No messages yet.</p>";
   $("groupMessages").scrollTop=$("groupMessages").scrollHeight;
+}
+
+
+function renderCadetDashboard(){
+  if(!$("cadetWelcomeName")) return;
+  const u=activeUniform||{uniform_name:"Not posted",wear_date:null,notes:"Uniform information has not been posted yet."};
+
+  $("cadetWelcomeName").textContent=currentProfile?.full_name?`Welcome, ${currentProfile.full_name}`:"My Dashboard";
+  $("cadetWelcomeMeta").textContent=[currentProfile?.role||"cadet", currentProfile?.flight, currentProfile?.position].filter(Boolean).join(" • ");
+
+  $("cadetUniformName").textContent=u.uniform_name;
+  $("cadetUniformDate").textContent=niceDate(u.wear_date).full;
+  $("cadetUniformNotes").textContent=u.notes||"";
+
+  $("cadetUpcomingEvents").innerHTML=events.slice(0,4).map(e=>{
+    const d=niceDate(e.event_date);
+    return `<div class="event"><div class="date"><b>${d.day}</b><small>${d.month}</small></div><div><h3>${esc(e.title)}</h3><p>${esc(e.event_type)}${e.location?" • "+esc(e.location):""}</p></div></div>`;
+  }).join("")||"<p class='muted'>No upcoming events.</p>";
+
+  $("cadetAnnouncements").innerHTML=announcements.slice(0,4).map(a=>`<article class="card"><span class="tag">${esc(a.category)}</span><h3>${esc(a.title)}</h3><p>${esc(a.message)}</p></article>`).join("")||"<p class='muted'>No announcements yet.</p>";
+
+  $("cadetGroups").innerHTML=discussionGroups.slice(0,5).map(g=>`<button class="group-item" data-open-group="${g.id}" data-public="groups"><b>${esc(g.name)}</b><small>${esc(g.description||"Private discussion")}</small></button>`).join("")||"<p class='muted'>No private groups assigned.</p>";
+
+  $("cadetResources").innerHTML=resources.slice(0,4).map(r=>`<article class="resource-card"><p class="eyebrow">${esc(r.category)}</p><h3>${esc(r.title)}</h3><p>${esc(r.description)}</p></article>`).join("")||"<p class='muted'>No resources yet.</p>";
 }
 
 function announcementForm(){
@@ -256,6 +283,9 @@ $("signInBtn").onclick=async()=>{
   }else{
     $("accountName").textContent=currentProfile?.full_name||sessionUser.email||"Account";
     $("accountRole").textContent=`Role: ${currentProfile?.role||"cadet"}`;
+    $("profileFullName").value=currentProfile?.full_name||"";
+    $("profileFlight").value=currentProfile?.flight||"";
+    $("profilePosition").value=currentProfile?.position||"";
     $("accountModal").classList.remove("hidden");
   }
 };
@@ -284,6 +314,20 @@ $("loginForm").onsubmit=async e=>{
   await loadGroups();
 
   if(currentProfile&&["admin","instructor"].includes(currentProfile.role))await openAdmin();
+};
+
+
+$("profileForm").onsubmit=async e=>{
+  e.preventDefault();
+  const {data,error}=await sb.rpc("update_own_profile",{
+    new_full_name:$("profileFullName").value.trim(),
+    new_flight:$("profileFlight").value.trim()||null,
+    new_position:$("profilePosition").value.trim()||null
+  });
+  if(error)return alert(error.message);
+  await loadSession();
+  renderCadetDashboard();
+  alert("Profile updated.");
 };
 
 $("accountSignOut").onclick=async()=>{
@@ -501,3 +545,4 @@ sb.auth.onAuthStateChange(async()=>{await loadSession()});
   await loadPublicData();
   await loadGroups();
 })();
+if($("cadetAccountBtn")) $("cadetAccountBtn").onclick=()=>$("signInBtn").click();

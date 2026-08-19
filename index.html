@@ -18,6 +18,7 @@
 
     <nav class="public-nav">
       <button data-public="home" class="active">Dashboard</button>
+      <button id="cadetDashboardNav" data-public="cadet-dashboard" class="hidden">My Dashboard</button>
       <button data-public="announcements">Announcements</button>
       <button data-public="calendar">Calendar</button>
       <button data-public="uniform">Uniform</button>
@@ -98,6 +99,61 @@
       </div>
     </section>
 
+    <section id="public-cadet-dashboard" class="public-page">
+      <div class="cadet-welcome">
+        <div>
+          <p class="eyebrow">SIGNED-IN CADET</p>
+          <h1 id="cadetWelcomeName">My Dashboard</h1>
+          <p id="cadetWelcomeMeta">MD-803 Cadet Account</p>
+        </div>
+        <button id="cadetAccountBtn" class="secondary">My Account</button>
+      </div>
+
+      <div class="cadet-dashboard-grid">
+        <article class="cadet-panel cadet-uniform-panel">
+          <div class="public-panel-title">♙ UNIFORM OF THE WEEK</div>
+          <div class="uniform-dashboard-card">
+            <div class="uniform-badge">UOTW</div>
+            <div>
+              <h2 id="cadetUniformName">Not posted</h2>
+              <p id="cadetUniformDate"></p>
+              <p id="cadetUniformNotes"></p>
+            </div>
+          </div>
+        </article>
+
+        <article class="cadet-panel">
+          <div class="public-panel-title">▣ UPCOMING EVENTS</div>
+          <div id="cadetUpcomingEvents"></div>
+        </article>
+
+        <article class="cadet-panel">
+          <div class="public-panel-title">📣 LATEST ANNOUNCEMENTS</div>
+          <div id="cadetAnnouncements"></div>
+        </article>
+
+        <article class="cadet-panel">
+          <div class="public-panel-title">◎ MY GROUPS</div>
+          <div id="cadetGroups"></div>
+        </article>
+
+        <article class="cadet-panel">
+          <div class="public-panel-title">▱ RESOURCES</div>
+          <div id="cadetResources"></div>
+        </article>
+
+        <article class="cadet-panel">
+          <div class="public-panel-title">QUICK ACTIONS</div>
+          <div class="quick-links">
+            <button data-public="board">Message Board</button>
+            <button data-public="groups">My Groups</button>
+            <button data-public="calendar">Calendar</button>
+            <button data-public="resources">Resources</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <section id="public-announcements" class="public-page">
       <div class="page-head"><p class="eyebrow">PROGRAM UPDATES</p><h1>Announcements</h1><p>Official information, reminders, and important updates.</p></div>
       <div id="publicAnnouncements" class="cards two"></div>
@@ -168,6 +224,12 @@
       <p class="eyebrow">MY ACCOUNT</p>
       <h2 id="accountName">Account</h2>
       <p id="accountRole" class="muted"></p>
+      <form id="profileForm">
+        <label>Display name<input id="profileFullName"></label>
+        <label>Flight<input id="profileFlight" placeholder="Optional"></label>
+        <label>Position<input id="profilePosition" placeholder="Optional"></label>
+        <button class="primary full">Save Profile</button>
+      </form>
       <button id="accountSignOut" class="secondary full">Sign Out</button>
     </div>
   </div>
@@ -391,9 +453,9 @@
     </div>
   </section>
 
-  <footer id="publicFooter">Gwynn Park High School AFJROTC • MD-803<br><small>Build: Group Discussions Visible v15</small></footer>
+  <footer id="publicFooter">Gwynn Park High School AFJROTC • MD-803<br><small>Build: Cadet Dashboard v16</small></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=15"></script>
+  <script src="app.js?v=16"></script>
 </body>
 </html>
