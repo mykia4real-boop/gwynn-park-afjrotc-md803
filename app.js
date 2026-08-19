@@ -6,6 +6,7 @@ const $=id=>document.getElementById(id);
 const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 let sessionUser=null,currentProfile=null,announcements=[],events=[],resources=[],posts=[],activeUniform=null,profiles=[];
+let discussionGroups=[], activeGroupId=null;
 
 function niceDate(date){
   if(!date)return{day:"--",month:"---",full:""};
@@ -68,6 +69,8 @@ function renderAuth(){
   $("signInBtn").textContent=signedIn?(currentProfile?.full_name||sessionUser.email||"Account"):"Sign In";
   if($("quickSignIn"))$("quickSignIn").textContent=signedIn?"My Account":"Sign In";
   $("publicPostForm").classList.toggle("hidden",!signedIn);
+  $("groupsNavBtn").classList.toggle("hidden",!signedIn);
+  if(!signedIn){ discussionGroups=[]; activeGroupId=null; }
   $("boardNotice").textContent=signedIn?`Signed in as ${currentProfile?.full_name||sessionUser.email}.`:"Guest view is read-only.";
 }
 
@@ -101,6 +104,40 @@ function renderPublic(){
 
   $("publicPosts").innerHTML=posts.map(p=>`<article class="post"><b>${esc(p.title||"Cadet Post")}</b><p>${esc(p.message)}</p></article>`).join("")||"<p>No approved posts yet.</p>";
   $("publicResources").innerHTML=resources.map(r=>`<article class="resource-card"><p class="eyebrow">${esc(r.category)}</p><h3>${esc(r.title)}</h3><p>${esc(r.description)}</p>${r.url?`<a href="${esc(r.url)}" target="_blank" rel="noopener">Open resource →</a>`:""}</article>`).join("")||"<p>No resources yet.</p>";
+}
+
+
+async function loadGroups(){
+  if(!sessionUser){ discussionGroups=[]; renderGroups(); return; }
+  const {data,error}=await sb.from("discussion_groups").select("*").eq("archived",false).order("created_at",{ascending:false});
+  if(error){ console.error(error); return; }
+  discussionGroups=data||[];
+  renderGroups();
+}
+
+function renderGroups(){
+  if(!$("myGroups")) return;
+  $("myGroups").innerHTML=discussionGroups.map(g=>`<button class="group-item ${activeGroupId===g.id?"active":""}" data-open-group="${g.id}"><b>${esc(g.name)}</b><small>${esc(g.description||"Private discussion")}</small></button>`).join("")||"<p class='muted'>You have no private groups yet.</p>";
+}
+
+async function openGroup(groupId){
+  activeGroupId=groupId;
+  renderGroups();
+  const group=discussionGroups.find(g=>g.id===groupId);
+  if(!group)return;
+  $("groupChatEmpty").classList.add("hidden");
+  $("groupChat").classList.remove("hidden");
+  $("groupChatTitle").textContent=group.name;
+  const {data,error}=await sb.from("discussion_messages").select("*").eq("group_id",groupId).order("created_at",{ascending:true});
+  if(error){ $("groupMessages").innerHTML="<p>Could not load messages.</p>"; return; }
+  const authorIds=[...new Set((data||[]).map(m=>m.author_id))];
+  let names={};
+  if(authorIds.length){
+    const {data:people}=await sb.from("profiles").select("id,full_name").in("id",authorIds);
+    (people||[]).forEach(p=>names[p.id]=p.full_name||"Member");
+  }
+  $("groupMessages").innerHTML=(data||[]).map(m=>`<div class="group-message"><b>${esc(names[m.author_id]||"Member")}</b><small>${new Date(m.created_at).toLocaleString()}</small><p>${esc(m.message)}</p></div>`).join("")||"<p class='muted'>No messages yet.</p>";
+  $("groupMessages").scrollTop=$("groupMessages").scrollHeight;
 }
 
 function announcementForm(){
@@ -176,6 +213,10 @@ function renderAdmin(){
 
   $("accountList").innerHTML=profiles.map(p=>`<div class="account-row"><div class="account-person"><b>${esc(p.full_name||"Unnamed User")}</b><small>${esc(p.position||p.flight||"MD-803 Account")}</small></div><div class="account-email">${esc(p.email||"")}</div><select class="role-select" data-role-user="${p.id}"><option value="cadet" ${p.role==="cadet"?"selected":""}>Cadet</option><option value="staff" ${p.role==="staff"?"selected":""}>Staff</option><option value="admin" ${p.role==="admin"?"selected":""}>Admin</option><option value="instructor" ${p.role==="instructor"?"selected":""}>Instructor</option></select></div>`).join("")||"<p>No accounts found.</p>";
 
+  $("groupMemberPicker").innerHTML=profiles.map(p=>`<label class="member-choice"><input type="checkbox" name="groupMember" value="${p.id}"><span>${esc(p.full_name||p.email||"User")} <small>(${esc(p.role)})</small></span></label>`).join("")||"<p>No accounts found.</p>";
+
+  $("adminGroups").innerHTML=discussionGroups.map(g=>`<div class="group-admin-card"><b>${esc(g.name)}</b><p class="muted">${esc(g.description||"No description")}</p><button class="danger" data-archive-group="${g.id}">Archive</button></div>`).join("")||"<p>No groups yet.</p>";
+
   const u=activeUniform||{};
   $("adminUniformName").value=u.uniform_name||"Class B";
   $("adminUniformDate").value=u.wear_date||"";
@@ -201,6 +242,7 @@ function renderAdmin(){
 
 async function refreshAll(reopenAdmin=false){
   await loadPublicData();
+  await loadGroups();
   if(reopenAdmin&&currentProfile&&["admin","instructor"].includes(currentProfile.role))await openAdmin();
 }
 
@@ -239,6 +281,7 @@ $("loginForm").onsubmit=async e=>{
   $("loginModal").classList.add("hidden");
   e.target.reset();
   await loadSession();
+  await loadGroups();
 
   if(currentProfile&&["admin","instructor"].includes(currentProfile.role))await openAdmin();
 };
@@ -401,6 +444,51 @@ $("createAccountForm").onsubmit = async (e) => {
   await openAdmin();
 };
 
+
+$("createGroupForm").onsubmit=async e=>{
+  e.preventDefault();
+  const memberIds=[...document.querySelectorAll('input[name="groupMember"]:checked')].map(x=>x.value);
+  const {data:group,error}=await sb.from("discussion_groups").insert({
+    name:$("newGroupName").value.trim(),
+    description:$("newGroupDescription").value.trim()||null,
+    created_by:sessionUser.id
+  }).select().single();
+  if(error)return alert(error.message);
+
+  const uniqueMembers=[...new Set([...memberIds,sessionUser.id])];
+  const {error:memberError}=await sb.from("discussion_group_members").insert(uniqueMembers.map(user_id=>({group_id:group.id,user_id})));
+  if(memberError){
+    await sb.from("discussion_groups").delete().eq("id",group.id);
+    return alert(memberError.message);
+  }
+  e.target.reset();
+  await loadGroups();
+  await openAdmin();
+  showAdminPage("groups");
+};
+
+$("groupMessageForm").onsubmit=async e=>{
+  e.preventDefault();
+  if(!activeGroupId)return;
+  const message=$("groupMessageText").value.trim();
+  if(!message)return;
+  const {error}=await sb.from("discussion_messages").insert({group_id:activeGroupId,author_id:sessionUser.id,message});
+  if(error)return alert(error.message);
+  e.target.reset();
+  await openGroup(activeGroupId);
+};
+
+document.addEventListener("click",async e=>{
+  const open=e.target.closest("[data-open-group]");
+  if(open){ await openGroup(open.dataset.openGroup); return; }
+  const archive=e.target.closest("[data-archive-group]");
+  if(archive){
+    const {error}=await sb.from("discussion_groups").update({archived:true}).eq("id",archive.dataset.archiveGroup);
+    if(error)return alert(error.message);
+    await loadGroups(); await openAdmin(); showAdminPage("groups");
+  }
+});
+
 $("settingsForm").onsubmit=e=>{
   e.preventDefault();
   alert("Settings page is ready. Site-wide settings storage is the next database table we’ll add.");
@@ -411,4 +499,5 @@ sb.auth.onAuthStateChange(async()=>{await loadSession()});
 (async function init(){
   await loadSession();
   await loadPublicData();
+  await loadGroups();
 })();

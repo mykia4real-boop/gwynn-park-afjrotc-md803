@@ -22,6 +22,7 @@
       <button data-public="calendar">Calendar</button>
       <button data-public="uniform">Uniform</button>
       <button data-public="board">Message Board</button>
+      <button id="groupsNavBtn" data-public="groups" class="hidden">My Groups</button>
       <button data-public="resources">Resources</button>
     </nav>
 
@@ -131,6 +132,14 @@
       <div id="publicPosts" class="post-list"></div>
     </section>
 
+    <section id="public-groups" class="public-page">
+      <div class="page-head"><p class="eyebrow">PRIVATE DISCUSSIONS</p><h1>My Groups</h1><p>Only groups you have permission to access appear here.</p></div>
+      <div class="group-layout">
+        <article class="panel"><div class="panel-title">MY DISCUSSIONS</div><div id="myGroups"></div></article>
+        <article class="panel"><div id="groupChatEmpty" class="muted">Choose a discussion to open it.</div><div id="groupChat" class="hidden"><div class="panel-title" id="groupChatTitle"></div><div id="groupMessages" class="group-messages"></div><form id="groupMessageForm"><label>Message<textarea id="groupMessageText" maxlength="2000" required></textarea></label><button class="primary">Send Message</button></form></div></article>
+      </div>
+    </section>
+
     <section id="public-resources" class="public-page">
       <div class="page-head"><p class="eyebrow">PROGRAM MATERIALS</p><h1>Resources</h1><p>Handbooks, forms, guides, and approved links.</p></div>
       <div id="publicResources" class="resource-grid"></div>
@@ -177,6 +186,7 @@
         <button data-admin="uniform">♙ Uniform of the Week</button>
         <button data-admin="accounts">♧ Cadet Accounts</button>
         <button data-admin="board">◌ Message Board</button>
+        <button data-admin="groups">◎ Group Discussions</button>
         <button data-admin="resources">▱ Resources</button>
         <button data-admin="gallery">▧ Photo Gallery</button>
         <button data-admin="settings">⚙ Settings</button>
@@ -319,6 +329,23 @@
         <article class="panel"><div id="adminPosts"></div></article>
       </section>
 
+      <section id="admin-groups" class="admin-page">
+        <div class="page-head"><h1>Group Discussions</h1><p>Create private discussions and choose exactly which accounts can see them.</p></div>
+        <div class="grid2">
+          <article class="panel">
+            <div class="panel-title">CREATE GROUP</div>
+            <form id="createGroupForm">
+              <label>Group name<input id="newGroupName" required placeholder="Example: Color Guard"></label>
+              <label>Description<textarea id="newGroupDescription"></textarea></label>
+              <label>Allowed accounts</label>
+              <div id="groupMemberPicker" class="member-picker"></div>
+              <button class="primary">Create Discussion</button>
+            </form>
+          </article>
+          <article class="panel"><div class="panel-title">MANAGE GROUPS</div><div id="adminGroups"></div></article>
+        </div>
+      </section>
+
       <section id="admin-resources" class="admin-page">
         <div class="page-head"><h1>Resources</h1><p>Add useful links, forms, and guides.</p></div>
         <div class="grid2">
@@ -363,9 +390,9 @@
     </div>
   </section>
 
-  <footer id="publicFooter">Gwynn Park High School AFJROTC • MD-803<br><small>Build: Account Management v13</small></footer>
+  <footer id="publicFooter">Gwynn Park High School AFJROTC • MD-803<br><small>Build: Cadet + Private Groups v14</small></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=13"></script>
+  <script src="app.js?v=14"></script>
 </body>
 </html>
