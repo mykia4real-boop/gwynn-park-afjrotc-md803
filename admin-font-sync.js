@@ -1,1 +1,24 @@
-(()=>{const id='adminFontSyncStyles';if(document.getElementById(id))return;const s=document.createElement('style');s.id=id;s.textContent=`.admin-shell,.admin-side,.admin-main,.admin-top,.admin-page,.admin-page button,.admin-page input,.admin-page select,.admin-page textarea{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important}`;document.head.appendChild(s)})();
+(()=>{
+  const id='adminFontSyncStyles';
+  if(document.getElementById(id))return;
+  const s=document.createElement('style');
+  s.id=id;
+  s.textContent=`
+    #adminApp,
+    #adminApp *,
+    #adminAccessGate,
+    #adminAccessGate *,
+    .admin-shell,
+    .admin-side,
+    .admin-main,
+    .admin-top,
+    .admin-page,
+    .admin-page button,
+    .admin-page input,
+    .admin-page select,
+    .admin-page textarea{
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+    }
+  `;
+  document.head.appendChild(s);
+})();
