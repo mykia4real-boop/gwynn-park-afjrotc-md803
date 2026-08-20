@@ -3,7 +3,9 @@
   function rename(){document.querySelectorAll('button[data-public="cadet-dashboard"]').forEach(b=>b.textContent='My Profile')}
   function boot(){
     rename();
-    if(started||!window.sb||!window.sessionUser)return;
+    let ready=false;
+    try{ready=!!sessionUser&&!!sb}catch(_){ready=false}
+    if(started||!ready)return;
     started=true;
     const s=document.createElement('script');
     s.src='profile-dashboard.js?v=57-auth';
