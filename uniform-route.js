@@ -1,0 +1,1 @@
+(()=>{document.addEventListener('click',e=>{const b=e.target.closest('[data-public="uniform"]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();window.location.href='/uniform.html';},true);})();
