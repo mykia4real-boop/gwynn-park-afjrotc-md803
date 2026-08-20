@@ -1,64 +1,79 @@
 (()=>{
-  let syncing=false;
-  function ensureNav(){
-    if(syncing)return;
-    syncing=true;
-    try{
-      const desktop=document.querySelector('.public-nav');
-      const mobile=document.getElementById('mobileNav');
+  let scheduled=false;
 
-      const setup=(container,isMobile=false)=>{
-        if(!container)return;
-        let home=container.querySelector('[data-public="home"]');
-        let dash=container.querySelector('[data-public="cadet-dashboard"]');
+  function setup(container,isMobile=false){
+    if(!container)return;
 
-        if(!home){
-          home=document.createElement('button');
-          home.dataset.public='home';
-          container.prepend(home);
+    let home=container.querySelector('[data-public="home"]');
+    let dash=container.querySelector('[data-public="cadet-dashboard"]');
+
+    if(!home){
+      home=document.createElement('button');
+      home.dataset.public='home';
+      container.prepend(home);
+    }
+    if(!dash){
+      dash=document.createElement('button');
+      dash.dataset.public='cadet-dashboard';
+      home.after(dash);
+    }
+
+    // Keep these two entries permanently first in the navigation.
+    if(container.firstElementChild!==home) container.prepend(home);
+    if(home.nextElementSibling!==dash) home.after(dash);
+
+    home.textContent='Home';
+    home.dataset.shellIcon='⌂';
+    home.classList.remove('hidden');
+    home.removeAttribute('hidden');
+
+    dash.textContent='My Dashboard';
+    dash.dataset.shellIcon='▦';
+    dash.classList.remove('hidden');
+    dash.removeAttribute('hidden');
+    dash.id=isMobile?'mobileCadetDashboard':'cadetDashboardNav';
+
+    if(!home.dataset.navBound){
+      home.dataset.navBound='1';
+      home.addEventListener('click',e=>{
+        e.preventDefault();
+        if(typeof showPublic==='function')showPublic('home');
+        if(isMobile)document.getElementById('mobileNav')?.classList.add('hidden');
+      });
+    }
+
+    if(!dash.dataset.navBound){
+      dash.dataset.navBound='1';
+      dash.addEventListener('click',e=>{
+        e.preventDefault();
+        if(typeof sessionUser!=='undefined'&&sessionUser){
+          if(typeof showPublic==='function')showPublic('cadet-dashboard');
+        }else{
+          document.getElementById('signInBtn')?.click();
         }
-        home.textContent='Home';
-        home.dataset.shellIcon='⌂';
-        home.classList.remove('hidden');
-        home.style.removeProperty('display');
-
-        if(!dash){
-          dash=document.createElement('button');
-          dash.dataset.public='cadet-dashboard';
-          if(home.nextSibling)container.insertBefore(dash,home.nextSibling); else container.appendChild(dash);
-        }
-        dash.textContent='My Dashboard';
-        dash.dataset.shellIcon='▦';
-        dash.classList.remove('hidden');
-        dash.style.setProperty('display','flex','important');
-        if(isMobile){dash.id='mobileCadetDashboard';} else {dash.id='cadetDashboardNav';}
-
-        home.onclick=(e)=>{e.preventDefault();e.stopPropagation();if(typeof showPublic==='function')showPublic('home');};
-        dash.onclick=(e)=>{
-          e.preventDefault();e.stopPropagation();
-          if(typeof sessionUser!=='undefined' && sessionUser){
-            if(typeof showPublic==='function')showPublic('cadet-dashboard');
-          }else{
-            document.getElementById('signInBtn')?.click();
-          }
-        };
-      };
-
-      setup(desktop,false);
-      setup(mobile,true);
-
-      const home=document.getElementById('public-home');
-      const dashPage=document.getElementById('public-cadet-dashboard');
-      if(home)home.style.removeProperty('display');
-      if(dashPage)dashPage.style.removeProperty('display');
-    }finally{
-      syncing=false;
+        if(isMobile)document.getElementById('mobileNav')?.classList.add('hidden');
+      });
     }
   }
 
+  function ensureNav(){
+    scheduled=false;
+    setup(document.querySelector('.public-nav'),false);
+    setup(document.getElementById('mobileNav'),true);
+    document.getElementById('public-home')?.style.removeProperty('display');
+    document.getElementById('public-cadet-dashboard')?.style.removeProperty('display');
+  }
+
+  function schedule(){
+    if(scheduled)return;
+    scheduled=true;
+    requestAnimationFrame(ensureNav);
+  }
+
   ensureNav();
-  [100,300,700,1200,2000,3500].forEach(ms=>setTimeout(ensureNav,ms));
-  const observer=new MutationObserver(()=>queueMicrotask(ensureNav));
-  observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style']});
+  [150,500,1200,2500].forEach(ms=>setTimeout(ensureNav,ms));
+  // Observe only DOM additions/removals. Watching style/class changes caused a feedback loop
+  // that could make the site feel unclickable.
+  new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true});
   window.addEventListener('pageshow',ensureNav);
 })();
