@@ -1,50 +1,54 @@
 (()=>{
   function injectStyles(){
-    if(document.getElementById('unifiedDashboardStyles'))return;
+    if(document.getElementById('dashboardSeparationStyles'))return;
     const s=document.createElement('style');
-    s.id='unifiedDashboardStyles';
+    s.id='dashboardSeparationStyles';
     s.textContent=`
-      #public-home{display:none!important}
-      #cadetDashboardNav,#mobileCadetDashboard{display:none!important}
+      #public-home{display:none}
+      #public-home.active{display:block!important}
+      #public-cadet-dashboard{display:none}
+      #public-cadet-dashboard.active{display:block!important}
+      #cadetDashboardNav,#mobileCadetDashboard{display:flex!important}
     `;
     document.head.appendChild(s);
   }
 
-  function unifyNavigation(){
+  function labelNavigation(){
     document.querySelectorAll('[data-public="home"]').forEach(btn=>{
-      btn.dataset.public='cadet-dashboard';
+      btn.dataset.shellIcon='⌂';
+      if(btn.closest('.public-nav')||btn.closest('#mobileNav')) btn.textContent='Home';
+    });
+    document.querySelectorAll('[data-public="cadet-dashboard"]').forEach(btn=>{
       btn.dataset.shellIcon='▦';
       if(btn.closest('.public-nav')||btn.closest('#mobileNav')) btn.textContent='My Dashboard';
     });
   }
 
-  const originalShowPublic=showPublic;
-  showPublic=function(page){
-    return originalShowPublic(page==='home'?'cadet-dashboard':page);
-  };
-
-  const originalRenderCadetDashboard=renderCadetDashboard;
-  renderCadetDashboard=function(){
-    originalRenderCadetDashboard();
-    const name=document.getElementById('cadetWelcomeName');
-    const meta=document.getElementById('cadetWelcomeMeta');
-    const acct=document.getElementById('cadetAccountBtn');
-    if(!sessionUser){
-      if(name)name.textContent='AFJROTC Dashboard';
-      if(meta)meta.textContent='Gwynn Park High School AFJROTC';
-      if(acct)acct.textContent='Sign In';
-    }else if(acct){
-      acct.textContent='My Account';
+  function setDefaultPage(){
+    if(location.pathname.endsWith('/admin.html'))return;
+    const active=document.querySelector('.public-page.active');
+    if(!active){
+      try{showPublic('home')}catch(_){ }
     }
-    if(acct)acct.onclick=()=>document.getElementById('signInBtn')?.click();
-  };
+  }
+
+  const originalRenderCadetDashboard=typeof renderCadetDashboard==='function'?renderCadetDashboard:null;
+  if(originalRenderCadetDashboard){
+    renderCadetDashboard=function(){
+      originalRenderCadetDashboard();
+      const acct=document.getElementById('cadetAccountBtn');
+      if(acct){
+        acct.textContent=sessionUser?'My Account':'Sign In';
+        acct.onclick=()=>document.getElementById('signInBtn')?.click();
+      }
+    };
+  }
 
   injectStyles();
-  unifyNavigation();
-  renderCadetDashboard();
+  labelNavigation();
+  if(originalRenderCadetDashboard) renderCadetDashboard();
+  setDefaultPage();
 
-  if(!location.pathname.endsWith('/admin.html')){
-    const active=document.querySelector('.public-page.active');
-    if(!active||active.id==='public-home') showPublic('cadet-dashboard');
-  }
+  const observer=new MutationObserver(()=>labelNavigation());
+  observer.observe(document.body,{childList:true,subtree:true});
 })();
