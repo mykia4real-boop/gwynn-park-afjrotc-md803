@@ -1,0 +1,1 @@
+(()=>{document.addEventListener('click',e=>{const b=e.target.closest('[data-public="ranks"]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();location.href='/ranks.html';},true)})();
