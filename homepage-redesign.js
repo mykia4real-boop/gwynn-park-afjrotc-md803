@@ -1,8 +1,182 @@
 (()=>{
-function styles(){if(document.getElementById('homeRedesignStyles'))return;const s=document.createElement('style');s.id='homeRedesignStyles';s.textContent=`#public-home{padding:0!important;max-width:none!important}.home-hero{min-height:390px;padding:58px 44px;display:flex;align-items:center;position:relative;overflow:hidden;background:linear-gradient(90deg,rgba(4,18,36,.98),rgba(4,18,36,.78),rgba(4,18,36,.35)),linear-gradient(135deg,#0a2747,#173f6b);background-size:cover;background-position:center}.home-hero-copy{position:relative;z-index:2;max-width:650px;color:white}.home-kicker{color:#ffd83d;font-size:15px;font-weight:900;letter-spacing:.04em;margin:0 0 8px}.home-hero h1{font-size:clamp(46px,6vw,82px);line-height:.9;margin:0 0 18px;color:#fff;letter-spacing:-.035em}.home-hero p{font-size:17px;line-height:1.55;max-width:560px}.home-actions{display:flex;gap:12px;margin-top:25px;flex-wrap:wrap}.home-actions button{padding:13px 18px;border-radius:9px;font-weight:900;border:1px solid rgba(255,255,255,.65);background:transparent;color:#fff}.home-actions .gold{background:#ffd83d;color:#071528;border-color:#ffd83d}.home-wrap{padding:30px 44px}.home-welcome{display:grid;grid-template-columns:1.25fr repeat(3,1fr);gap:18px;align-items:stretch}.home-intro{padding:8px 10px 8px 0}.home-intro h2,.home-section-head h2{color:#071b36;margin:4px 0 12px;font-size:25px}.home-intro p{color:#52647b;line-height:1.6}.value-card,.week-card{background:#fff;border:1px solid #e3e9f0;border-radius:18px;padding:22px;box-shadow:0 10px 28px rgba(15,23,42,.06)}.value-icon,.week-icon{width:56px;height:56px;border-radius:50%;background:#071b36;color:#ffd83d;display:grid;place-items:center;font-size:26px;margin-bottom:16px}.value-card h3{color:#071b36;margin:0 0 8px}.value-card p,.week-card p{color:#52647b;line-height:1.5;font-size:14px}.home-week{background:#f4f7fb;padding:30px 44px}.home-section-head{display:flex;align-items:center;justify-content:space-between;gap:16px}.home-section-head button{border:0;background:none;color:#075a91;font-weight:900;cursor:pointer}.week-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.week-card{display:flex;gap:16px}.week-card h3{margin:2px 0 7px;color:#071b36}.week-icon{flex:0 0 50px;width:50px;height:50px}.home-gallery{padding:30px 44px}.home-gallery-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.home-gallery-shot{height:145px;border-radius:13px;background:linear-gradient(135deg,#0a2747,#294f78);overflow:hidden}.home-gallery-shot img{width:100%;height:100%;object-fit:cover}.home-numbers{background:#071b36;color:#fff;padding:30px 44px}.home-numbers h2{text-align:center;margin:0 0 24px}.number-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.number-item{text-align:center;border-right:1px solid rgba(255,255,255,.16)}.number-item:last-child{border:0}.number-item b{display:block;color:#ffd83d;font-size:31px}.number-item span{font-size:13px;font-weight:800}.home-footer{background:#061426;color:#dce6f2;padding:25px 44px;display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:30px}.home-footer h3{color:#ffd83d;margin:0 0 7px}.home-footer p{margin:4px 0;font-size:13px}.home-footer button{background:#ffd83d;color:#071528;border:0;border-radius:9px;padding:11px 15px;font-weight:900;margin-top:8px}@media(max-width:900px){.home-hero,.home-wrap,.home-week,.home-gallery,.home-numbers{padding-left:22px;padding-right:22px}.home-welcome{grid-template-columns:1fr}.week-grid{grid-template-columns:1fr}.home-gallery-row{grid-template-columns:repeat(2,1fr)}.home-gallery-shot:last-child{display:none}.number-grid{grid-template-columns:repeat(2,1fr)}.home-footer{grid-template-columns:1fr;padding:25px 22px}}`;document.head.appendChild(s)}
-function clickPage(page){document.querySelector(`button[data-public="${page}"]`)?.click()}
-function build(){const home=document.getElementById('public-home');if(!home||home.dataset.redesigned)return;home.dataset.redesigned='1';styles();home.innerHTML=`<section class="home-hero" id="newHomeHero"><div class="home-hero-copy"><p class="home-kicker">GWYNN PARK HIGH SCHOOL</p><h1>AIR FORCE<br>JROTC</h1><p>Developing citizens of character dedicated to serving their nation and community.</p><div class="home-actions"><button class="gold" data-home-go="about">Explore Our Unit →</button><button id="homeCadetSignIn">● &nbsp; Cadet Sign In</button></div></div></section><section class="home-wrap"><div class="home-welcome"><div class="home-intro"><p class="home-kicker">WELCOME TO</p><h2>GWYNN PARK AFJROTC</h2><p>Our program develops citizenship, leadership, personal responsibility, and service through meaningful opportunities in and beyond the classroom.</p><p>We are building the leaders of tomorrow—right here, right now.</p></div><article class="value-card"><div class="value-icon">★</div><h3>LEADERSHIP</h3><p>Building confidence and character through leadership opportunities and real-world experiences.</p></article><article class="value-card"><div class="value-icon">◆</div><h3>SERVICE</h3><p>Committed to serving our school, community, and nation through meaningful service projects.</p></article><article class="value-card"><div class="value-icon">🏆</div><h3>EXCELLENCE</h3><p>Striving for excellence in all we do—academically, physically, and personally.</p></article></div></section><section class="home-week"><div class="home-section-head"><h2>THIS WEEK IN AFJROTC</h2><button data-home-go="calendar">View Full Calendar</button></div><div class="week-grid"><article class="week-card"><div class="week-icon">◇</div><div><small>CURRENT UNIFORM</small><h3 id="homeUniform">Loading…</h3><p id="homeUniformMeta">Check the uniform guide for details.</p></div></article><article class="week-card"><div class="week-icon">▣</div><div><small>UPCOMING EVENT</small><h3 id="homeEvent">Loading…</h3><p id="homeEventMeta">View the calendar for details.</p></div></article><article class="week-card"><div class="week-icon">◉</div><div><small>LATEST ANNOUNCEMENT</small><h3 id="homeAnnouncement">Loading…</h3><p id="homeAnnouncementMeta">View announcements for the latest update.</p></div></article></div></section><section class="home-gallery"><div class="home-section-head"><h2>UNIT IN ACTION</h2><button data-home-go="gallery">View Full Gallery</button></div><div class="home-gallery-row" id="homeGalleryRow">${'<div class="home-gallery-shot"></div>'.repeat(5)}</div></section><section class="home-numbers"><h2>BY THE NUMBERS</h2><div class="number-grid"><div class="number-item"><b id="homeCadetCount">—</b><span>Cadets</span></div><div class="number-item"><b id="homeServiceHours">—</b><span>Service Hours</span></div><div class="number-item"><b id="homeEventCount">—</b><span>Upcoming Events</span></div><div class="number-item"><b>AFJROTC</b><span>Leadership • Service • Excellence</span></div></div></section><footer class="home-footer"><div><h3>AFJROTC</h3><p>GWYNN PARK HIGH SCHOOL</p><p>Excellence in All We Do</p></div><div><b>QUICK LINKS</b><p>Calendar • Resources • Uniform Guide</p><p>Message Board • Photo Gallery</p></div><div><b>ACCOUNT ACCESS</b><p>Cadets and staff can sign in for personalized tools.</p><button id="homeFooterSignIn">Cadet Sign In</button></div></footer>`;
-home.querySelectorAll('[data-home-go]').forEach(b=>b.onclick=()=>clickPage(b.dataset.homeGo));const signin=()=>document.getElementById('signInBtn')?.click();document.getElementById('homeCadetSignIn').onclick=signin;document.getElementById('homeFooterSignIn').onclick=signin;syncData()}
-function syncData(){const txt=(id)=>document.getElementById(id)?.textContent?.trim();const apply=()=>{const u=txt('publicUniformName');if(u&&u!=='Not posted')document.getElementById('homeUniform').textContent=u;const ud=txt('publicUniformDate');if(ud)document.getElementById('homeUniformMeta').textContent=ud;const ac=txt('publicAnnouncementCount');if(ac)document.getElementById('homeAnnouncementMeta').textContent=`${ac} announcement${ac==='1'?'':'s'} posted`;const ec=txt('publicEventCount');if(ec)document.getElementById('homeEventCount').textContent=ec;const ann=document.querySelector('#publicAnnouncements h3,#publicAnnouncements h2,.announcement-card h3');if(ann)document.getElementById('homeAnnouncement').textContent=ann.textContent.trim();const evt=document.querySelector('#publicEvents h3,#publicEvents h2,.event-card h3');if(evt)document.getElementById('homeEvent').textContent=evt.textContent.trim();const imgs=[...document.querySelectorAll('#publicGallery img')].slice(0,5);if(imgs.length){const row=document.getElementById('homeGalleryRow');row.innerHTML=imgs.map(i=>`<div class="home-gallery-shot"><img src="${i.src}" alt="AFJROTC unit activity"></div>`).join('');document.getElementById('newHomeHero').style.backgroundImage=`linear-gradient(90deg,rgba(4,18,36,.98),rgba(4,18,36,.78),rgba(4,18,36,.35)),url("${imgs[0].src}")`}};setTimeout(apply,500);setTimeout(apply,1800)}
-function renameHome(){document.querySelectorAll('button[data-public="home"]').forEach(b=>{b.textContent='Home';b.dataset.shellIcon='⌂'});const nav=document.querySelector('.public-nav');const home=nav?.querySelector('button[data-public="home"]');if(nav&&home)nav.prepend(home)}
-function run(){renameHome();build()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(run,900));else setTimeout(run,900);setTimeout(run,1800)})();
+  function addStyles(){
+    if(document.getElementById('homeRedesignStyles')) return;
+    const s=document.createElement('style');
+    s.id='homeRedesignStyles';
+    s.textContent=`
+      #public-home{padding:0!important;max-width:none!important;background:#f4f6f8!important}
+      #public-home *{box-sizing:border-box}
+      .gp-home-hero{padding:58px max(5%,28px) 48px;background:linear-gradient(135deg,#111820 0%,#242b35 100%);color:#fff;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:30px;align-items:center}
+      .gp-home-kicker{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:#ffd83d;font-weight:900;margin:0 0 11px}
+      .gp-home-hero h1{font-size:clamp(40px,5.8vw,72px);line-height:1.02;margin:0 0 15px;letter-spacing:-.035em;color:#fff}
+      .gp-home-hero-copy>p:not(.gp-home-kicker){font-size:16px;line-height:1.65;color:#cbd2dc;max-width:670px;margin:0}
+      .gp-home-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+      .gp-home-actions button,.gp-home-uniform button{min-height:44px;border-radius:10px;padding:11px 17px;font-weight:900;cursor:pointer}
+      .gp-home-primary{border:0;background:#ffd83d;color:#111820}
+      .gp-home-secondary{background:transparent;border:1px solid #68717d;color:#fff}
+      .gp-home-focus{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:18px;padding:22px}
+      .gp-home-focus small{font-size:11px;color:#b1b9c5;text-transform:uppercase;letter-spacing:.09em}
+      .gp-home-focus h3{font-size:25px;margin:9px 0 8px;color:#fff}
+      .gp-home-focus p{font-size:13px!important;line-height:1.55!important;color:#c4cbd5!important;margin:0!important}
+      .gp-home-main{padding:0 max(5%,28px) 38px}
+      .gp-home-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;position:relative;margin-top:-18px;margin-bottom:30px}
+      .gp-home-stat{background:#fff;border:1px solid #e0e5ea;border-radius:15px;padding:18px;min-width:0;box-shadow:0 8px 24px rgba(15,23,42,.05)}
+      .gp-home-stat span{display:block;font-size:10px;color:#727b86;text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin-bottom:8px}
+      .gp-home-stat b{display:block;font-size:23px;color:#111820;line-height:1.15;overflow-wrap:anywhere}
+      .gp-home-section{margin-bottom:28px}
+      .gp-home-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:14px}
+      .gp-home-section-head h2{font-size:24px;margin:0;color:#101923}
+      .gp-home-section-head p{font-size:13px;color:#6d7680;margin:5px 0 0}
+      .gp-home-link{border:0;background:transparent;color:#225f8c;font-weight:900;cursor:pointer;padding:6px 0}
+      .gp-home-announcements{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important}
+      .gp-home-announcements>.card{background:#fff!important;border:1px solid #e0e5ea!important;border-radius:15px!important;padding:18px!important;box-shadow:none!important}
+      .gp-home-announcements .card h3{font-size:16px;margin:10px 0 7px;color:#111820}
+      .gp-home-announcements .card p{font-size:13px;line-height:1.5;color:#68717c;margin-bottom:10px}
+      .gp-home-announcements .announcement-author{font-size:11px;color:#89919b}
+      .gp-home-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+      .gp-home-panel{background:#fff;border:1px solid #e0e5ea;border-radius:15px;padding:18px;min-width:0}
+      .gp-home-events .event{border:0!important;border-top:1px solid #edf0f2!important;border-radius:0!important;padding:13px 0!important;background:transparent!important}
+      .gp-home-events .event:first-child{border-top:0!important;padding-top:0!important}
+      .gp-home-events .event .date{min-width:54px!important;padding-right:13px!important}
+      .gp-home-events .event h3{font-size:14px}
+      .gp-home-uniform{background:linear-gradient(135deg,#171e27,#29313d);color:#fff;border-radius:15px;padding:22px;display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:100%}
+      .gp-home-uniform small{font-size:10px;color:#abb4c0;text-transform:uppercase;letter-spacing:.09em;font-weight:800}
+      .gp-home-uniform h3{font-size:26px;margin:7px 0 5px;color:#fff}
+      .gp-home-uniform p{font-size:13px;line-height:1.55;color:#c4ccd6;margin:0}
+      .gp-home-quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+      .gp-home-quick button{background:#fff;border:1px solid #e0e5ea;border-radius:14px;padding:18px 15px;text-align:left;color:#111820;cursor:pointer;min-height:96px}
+      .gp-home-quick b{display:block;font-size:15px;margin-bottom:6px}
+      .gp-home-quick span{display:block;font-size:12px;line-height:1.45;color:#707983;font-weight:500}
+      .gp-home-footer{padding:24px max(5%,28px);background:#111820;color:#b8c0ca;text-align:center;font-size:12px}
+      .gp-home-compat{display:none!important}
+      @media(max-width:980px){
+        .gp-home-hero{grid-template-columns:1fr;padding-top:42px}
+        .gp-home-stats,.gp-home-quick{grid-template-columns:repeat(2,minmax(0,1fr))}
+        .gp-home-announcements{grid-template-columns:1fr 1fr!important}
+      }
+      @media(max-width:700px){
+        .gp-home-hero,.gp-home-main{padding-left:18px;padding-right:18px}
+        .gp-home-split{grid-template-columns:1fr}
+        .gp-home-announcements{grid-template-columns:1fr!important}
+        .gp-home-uniform{align-items:flex-start;flex-direction:column}
+      }
+      @media(max-width:520px){
+        .gp-home-stats,.gp-home-quick{grid-template-columns:1fr}
+        .gp-home-hero h1{font-size:38px}
+      }
+    `;
+    document.head.appendChild(s);
+  }
+
+  function clickPage(page){
+    document.querySelector(`button[data-public="${page}"]`)?.click();
+  }
+
+  function build(){
+    const home=document.getElementById('public-home');
+    if(!home || home.dataset.approvedHomepage==='1') return;
+    home.dataset.approvedHomepage='1';
+    addStyles();
+
+    home.innerHTML=`
+      <section class="gp-home-hero">
+        <div class="gp-home-hero-copy">
+          <p class="gp-home-kicker">Gwynn Park High School</p>
+          <h1>Air Force Junior ROTC</h1>
+          <p>Welcome to Gwynn Park High School AFJROTC. Find announcements, upcoming events, uniform information, resources, photos, and important program updates all in one place.</p>
+          <div class="gp-home-actions">
+            <button class="gp-home-primary" type="button" data-home-go="announcements">View Announcements</button>
+            <button class="gp-home-secondary" type="button" data-home-go="resources">Explore Resources</button>
+          </div>
+        </div>
+        <aside class="gp-home-focus">
+          <small>Program Focus</small>
+          <h3>Integrity. Service. Excellence.</h3>
+          <p>Developing leadership, responsibility, teamwork, and citizenship through meaningful experiences in and outside the classroom.</p>
+        </aside>
+      </section>
+
+      <main class="gp-home-main">
+        <section class="gp-home-stats" aria-label="AFJROTC site overview">
+          <article class="gp-home-stat"><span>Announcements</span><b id="publicAnnouncementCount">0</b></article>
+          <article class="gp-home-stat"><span>Upcoming Events</span><b id="publicEventCount">0</b></article>
+          <article class="gp-home-stat"><span>Uniform of the Week</span><b id="publicUniformQuick">Not posted</b></article>
+          <article class="gp-home-stat"><span>Resources</span><b id="publicResourceCount">0</b></article>
+        </section>
+
+        <section class="gp-home-section">
+          <div class="gp-home-section-head">
+            <div><h2>Latest Announcements</h2><p>Recent program updates for cadets, families, and visitors.</p></div>
+            <button type="button" class="gp-home-link" data-home-go="announcements">View all</button>
+          </div>
+          <div id="publicHomeAnnouncements" class="gp-home-announcements"></div>
+        </section>
+
+        <section class="gp-home-section gp-home-split">
+          <article class="gp-home-panel">
+            <div class="gp-home-section-head">
+              <div><h2 style="font-size:18px">Upcoming Events</h2></div>
+              <button type="button" class="gp-home-link" data-home-go="calendar">Full calendar</button>
+            </div>
+            <div id="publicHomeEvents" class="gp-home-events"></div>
+          </article>
+
+          <article class="gp-home-uniform">
+            <div>
+              <small>Uniform of the Week</small>
+              <h3 id="publicUniformName">Not posted</h3>
+              <p id="publicUniformDate"></p>
+              <p id="publicUniformNotes">Uniform information has not been posted yet.</p>
+            </div>
+            <button type="button" class="gp-home-primary" data-home-go="uniform">View Details</button>
+          </article>
+        </section>
+
+        <section class="gp-home-section">
+          <div class="gp-home-section-head">
+            <div><h2>Quick Links</h2><p>Get to the most-used public pages fast.</p></div>
+          </div>
+          <div class="gp-home-quick">
+            <button type="button" data-home-go="board"><b>Message Board</b><span>Read approved community posts and updates.</span></button>
+            <button type="button" data-home-go="resources"><b>Resources</b><span>Open handbooks, forms, guides, and useful links.</span></button>
+            <button type="button" data-home-go="uniform"><b>Uniform</b><span>Check this week's uniform and wear requirements.</span></button>
+            <button type="button" data-home-go="gallery"><b>Photo Gallery</b><span>View approved photos from AFJROTC activities.</span></button>
+          </div>
+        </section>
+      </main>
+
+      <footer class="gp-home-footer">Gwynn Park High School AFJROTC</footer>
+    `;
+
+    home.querySelectorAll('[data-home-go]').forEach(btn=>{
+      btn.addEventListener('click',()=>clickPage(btn.dataset.homeGo));
+    });
+
+    syncFromCurrentData();
+  }
+
+  function syncFromCurrentData(){
+    const rerender=()=>{
+      try{
+        if(typeof renderPublic==='function') renderPublic();
+      }catch(err){ console.warn('Homepage data refresh skipped',err); }
+    };
+    setTimeout(rerender,150);
+    setTimeout(rerender,900);
+  }
+
+  function normalizeNav(){
+    document.querySelectorAll('button[data-public="home"]').forEach(btn=>{
+      btn.textContent='Home';
+      btn.dataset.shellIcon='⌂';
+    });
+    const nav=document.querySelector('.public-nav');
+    const homeBtn=nav?.querySelector('button[data-public="home"]');
+    if(nav&&homeBtn) nav.prepend(homeBtn);
+  }
+
+  function run(){ normalizeNav(); build(); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(run,950));
+  else setTimeout(run,950);
+  setTimeout(run,1900);
+})();
