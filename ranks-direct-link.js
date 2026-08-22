@@ -9,6 +9,11 @@
   `;
   document.head.appendChild(style);
 
+  function rememberNavPosition(){
+    const nav=document.querySelector('.public-nav');
+    if(nav) sessionStorage.setItem('afjrotcNavScrollTop',String(nav.scrollTop||0));
+  }
+
   function replaceIn(nav,mobile=false){
     if(!nav)return;
     [...nav.querySelectorAll('button,a')].forEach(el=>{
@@ -20,6 +25,7 @@
         a.className='ranks-direct-link';
         a.setAttribute('aria-label','Ranks & Info');
         a.innerHTML=mobile?'Ranks & Info':'<span class="rank-link-icon">☆</span><span>Ranks & Info</span>';
+        a.addEventListener('click',rememberNavPosition);
         el.replaceWith(a);
       }
     });
@@ -29,6 +35,7 @@
       a.className='ranks-direct-link';
       a.setAttribute('aria-label','Ranks & Info');
       a.innerHTML=mobile?'Ranks & Info':'<span class="rank-link-icon">☆</span><span>Ranks & Info</span>';
+      a.addEventListener('click',rememberNavPosition);
       nav.appendChild(a);
     }
   }
