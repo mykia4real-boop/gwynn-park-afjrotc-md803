@@ -1,7 +1,7 @@
 (()=>{
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let cadetRows=[],serviceRows=[],leadershipRows=[],selectedId=null,currentTab='roster';
+let cadetRows=[],serviceRows=[],leadershipRows=[],selectedId=null;
 const roleLabel=r=>r==='command_staff'?'Command Staff':r==='class_leader'?'Class Leader':r==='instructor'?'Instructor':'Cadet';
 const fmtHours=n=>Number(n||0).toLocaleString(undefined,{maximumFractionDigits:1});
 function sumService(id){return serviceRows.filter(x=>x.cadet_id===id).reduce((s,x)=>s+Number(x.hours||0),0)}
@@ -23,8 +23,8 @@ function showWorkspace(name){
 }
 async function safe(p,f=[]){try{const {data,error}=await p;if(error)throw error;return data??f}catch(e){console.warn(e);return f}}
 async function loadCadets(){
-  if(!window.sb&&typeof sb==='undefined') return;
-  const client=window.adminSupabase||window.sb||sb;
+  const client=window.adminSupabase;
+  if(!client)return;
   const [p,s,l]=await Promise.all([
     safe(client.from('profiles').select('id,full_name,email,role,flight,position,rank,parent_email,parent_phone,created_at').order('full_name')),
     safe(client.from('community_service_hours').select('id,cadet_id,hours,organization,description,service_date,created_at').order('created_at',{ascending:false})),
@@ -67,7 +67,7 @@ function openEdit(id){
 }
 function closeEdit(){$('cadetEditModal').classList.add('hidden')}
 async function saveEdit(e){
- e.preventDefault();const client=window.adminSupabase||window.sb||sb;const id=$('cadetEditId').value;
+ e.preventDefault();const client=window.adminSupabase;if(!client)return;const id=$('cadetEditId').value;
  const payload={full_name:$('editName').value.trim(),role:$('editRole').value,rank:$('editRank').value.trim()||null,flight:$('editFlight').value.trim()||null,position:$('editPosition').value.trim()||null,parent_email:$('editParentEmail').value.trim()||null,parent_phone:$('editParentPhone').value.trim()||null};
  $('cadetEditStatus').textContent='Saving…';const {error}=await client.from('profiles').update(payload).eq('id',id);if(error){$('cadetEditStatus').textContent=error.message;return}$('cadetEditStatus').textContent='Saved.';await loadCadets();setTimeout(closeEdit,450)
 }
