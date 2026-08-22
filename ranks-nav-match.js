@@ -16,12 +16,12 @@
     nav.appendChild(b);
   };
 
-  /* Only add items that are actually missing from the Ranks page. */
   add('Settings','⚙','/?open=site-settings','settingsNavBtn');
-  add('Cadet Directory','•','/?open=cadet-directory','cadetDirectoryNav');
-  add('Chain of Command','⌁','/?open=chain-command','chainCommandNav');
 
-  /* Defensive cleanup: keep only one Handbook and one Uniform Guide. */
+  ['Cadet Directory','Chain of Command'].forEach(label=>{
+    [...nav.querySelectorAll('button,a')].filter(el=>(el.textContent||'').trim().toLowerCase()===label.toLowerCase()).forEach(el=>el.remove());
+  });
+
   ['Cadet Handbook','Uniform Guide'].forEach(label=>{
     const matches=[...nav.querySelectorAll('button,a')].filter(el=>(el.textContent||'').trim().toLowerCase()===label.toLowerCase());
     matches.slice(1).forEach(el=>el.remove());
