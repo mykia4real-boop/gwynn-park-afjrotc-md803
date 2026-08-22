@@ -2,9 +2,10 @@
 const SUPABASE_URL='https://usoqblqosmnqsogddgtc.supabase.co';
 const SUPABASE_KEY='sb_publishable_05451iVZPXWcag_IRyOv0g_rNlLA964';
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+window.adminSupabase=sb;
 const ADMIN_ROLES=['command_staff','instructor'];
 const $=id=>document.getElementById(id);
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 let profile=null;
 let profiles=[];
 function roleLabel(r){return r==='command_staff'?'Command Staff':r==='class_leader'?'Class Leader':r==='instructor'?'Instructor':'Cadet'}
