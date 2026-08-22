@@ -1,11 +1,11 @@
 (()=>{
   const style=document.createElement('style');
   style.textContent=`
-    .public-nav a.ranks-direct-link{position:relative;width:100%;min-height:46px;border:0;border-radius:11px;padding:11px 12px;text-align:left;color:#e8eef6;background:transparent;white-space:nowrap;overflow:hidden;font-family:inherit;font-size:inherit;font-weight:700;line-height:normal;text-decoration:none;display:flex;align-items:center;gap:10px}
+    .public-nav a.ranks-direct-link{position:relative;width:100%;min-height:46px;border:0;border-radius:11px;padding:11px 12px;text-align:left;color:#e8eef6;background:transparent;white-space:nowrap;overflow:hidden;font-family:inherit!important;font-size:14px!important;font-weight:700!important;line-height:normal!important;text-decoration:none;display:flex;align-items:center;gap:10px}
     .public-nav a.ranks-direct-link:hover,.public-nav a.ranks-direct-link.active{background:#173f6b;color:#fff}
     .public-nav a.ranks-direct-link .rank-link-icon{display:inline-grid;place-items:center;width:30px;height:24px;font-size:20px;color:#f7fbff;flex:0 0 auto}
-    #mobileNav a.ranks-direct-link{display:block;width:100%;padding:12px 14px;text-decoration:none;font-family:inherit;font-weight:700;color:inherit}
-    @media(min-width:1024px){body:not(.site-rail-open) .public-nav a.ranks-direct-link{font-size:0}body.site-rail-open .public-nav a.ranks-direct-link{font-size:14px}}
+    #mobileNav a.ranks-direct-link{display:block;width:100%;padding:12px 14px;text-decoration:none;font-family:inherit!important;font-size:14px!important;font-weight:700!important;line-height:normal!important;color:inherit}
+    @media(min-width:1024px){body:not(.site-rail-open) .public-nav a.ranks-direct-link{font-size:0!important}body.site-rail-open .public-nav a.ranks-direct-link{font-size:14px!important}}
   `;
   document.head.appendChild(style);
 
