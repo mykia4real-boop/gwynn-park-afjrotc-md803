@@ -2,7 +2,7 @@
   function ensure(){
     document.querySelectorAll('.public-nav').forEach(nav=>{
       const uniform=nav.querySelector('[data-public="uniform"]');
-      if(uniform){uniform.textContent='Uniform of the Day';uniform.dataset.shellIcon='◇';}
+      if(uniform){uniform.textContent='Cadet Dashboard';uniform.dataset.shellIcon='▦';}
 
       const handbookMatches=[...nav.querySelectorAll('button,a')].filter(el=>/Cadet Handbook/i.test((el.textContent||'').trim()));
       let handbook=handbookMatches[0]||null;
