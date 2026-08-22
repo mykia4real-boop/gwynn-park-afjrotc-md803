@@ -4,18 +4,26 @@
       const uniform=nav.querySelector('[data-public="uniform"]');
       if(uniform){uniform.textContent='Uniform of the Day';uniform.dataset.shellIcon='◇';}
 
-      let handbook=[...nav.querySelectorAll('button')].find(b=>/Cadet Handbook/i.test(b.textContent||''));
+      const handbookMatches=[...nav.querySelectorAll('button,a')].filter(el=>/Cadet Handbook/i.test((el.textContent||'').trim()));
+      let handbook=handbookMatches[0]||null;
+      handbookMatches.slice(1).forEach(el=>el.remove());
+
       if(!handbook){
         handbook=document.createElement('button');
         handbook.type='button';
         handbook.dataset.shellIcon='▤';
         handbook.textContent='Cadet Handbook';
         handbook.addEventListener('click',()=>location.href='/handbook.html');
-        const ranks=nav.querySelector('[data-public="ranks"]');
+        const ranks=[...nav.querySelectorAll('button,a')].find(el=>/Ranks\s*(?:&|and)\s*Info/i.test(el.textContent||'')||el.dataset?.public==='ranks');
         if(ranks) ranks.insertAdjacentElement('afterend',handbook); else nav.appendChild(handbook);
+      }else{
+        handbook.dataset.shellIcon='▤';
+        if(handbook.tagName==='A') handbook.href='/handbook.html';
       }
 
-      let guide=nav.querySelector('[data-uniform-guide]');
+      const guideMatches=[...nav.querySelectorAll('button,a')].filter(el=>el.dataset?.uniformGuide!==undefined||/Uniform Guide/i.test((el.textContent||'').trim()));
+      let guide=guideMatches[0]||null;
+      guideMatches.slice(1).forEach(el=>el.remove());
       if(!guide){
         guide=document.createElement('button');
         guide.type='button';
