@@ -10,6 +10,9 @@
   const CADET=[
     ['home','Home','⌂'],['cadet-dashboard','Cadet Dashboard','▦'],['announcements','Announcements','◉'],['calendar','Calendar','▣'],['board','Community','□'],['uniform-guide','Uniform Guide','◇'],['handbook','Cadet Handbook','▤'],['resources','Resources','▤'],['service','Service Hours','◷'],['gallery','Gallery','▧'],['flight','My Flight','✈'],['ranks','Ranks & Info','☆']
   ];
+  const INSTRUCTOR=[
+    ['home','Home','⌂'],['announcements','Announcements','◉'],['calendar','Calendar','▣'],['board','Community','□'],['uniform-guide','Uniform Guide','◇'],['handbook','Cadet Handbook','▤'],['resources','Resources','▤'],['gallery','Gallery','▧']
+  ];
 
   const style=document.createElement('style');
   style.id='afjrotcUnifiedShellStyles';
@@ -74,12 +77,17 @@
   }
   function currentPage(){return pathnameKey()||document.querySelector('.public-page.active')?.id?.replace(/^public-/,'')||'home'}
   function setActive(key){document.querySelectorAll('.site-shell-nav button[data-shell-page]').forEach(b=>b.classList.toggle('active',b.dataset.shellPage===key))}
-  function ensureNav(signedIn){
+  function navForRole(signedIn,role){
+    if(!signedIn)return PUBLIC;
+    if(role==='instructor')return INSTRUCTOR;
+    return CADET;
+  }
+  function ensureNav(signedIn,role){
     const header=document.querySelector('.public-header');if(!header)return;
     let nav=header.querySelector('.site-shell-nav');
     if(!nav){nav=document.createElement('nav');nav.className='site-shell-nav';header.appendChild(nav)}
     nav.innerHTML='';
-    (signedIn?CADET:PUBLIC).forEach(([key,label,icon])=>{
+    navForRole(signedIn,role).forEach(([key,label,icon])=>{
       const b=document.createElement('button');b.type='button';b.dataset.shellPage=key;
       if(signedIn){const i=document.createElement('span');i.className='shell-icon';i.textContent=icon;const t=document.createElement('span');t.textContent=label;b.append(i,t)}else b.textContent=label;
       b.onclick=e=>{e.preventDefault();route(key)};nav.appendChild(b);
@@ -92,19 +100,36 @@
     if(signedIn){if(crest)crest.textContent='GP';if(strong)strong.textContent='AFJROTC';if(small)small.textContent='GWYNN PARK HIGH SCHOOL'}
     else{if(crest)crest.textContent='803';if(strong)strong.textContent='MD-803 AFJROTC';if(small)small.textContent='GWYNN PARK HIGH SCHOOL'}
   }
-  function orderControls(signedIn){
+  function orderControls(signedIn,role){
     const header=document.querySelector('.public-header');if(!header)return;
     const nav=header.querySelector('.site-shell-nav'),sign=document.getElementById('signInBtn'),admin=document.getElementById('adminPortalBtn');
     if(nav)header.appendChild(nav);
     if(!signedIn){if(sign){sign.classList.remove('hidden');sign.textContent='Sign In'}if(admin)admin.classList.add('hidden');return}
     if(sign)header.appendChild(sign);
-    if(admin)header.appendChild(admin);
+    if(admin){
+      header.appendChild(admin);
+      admin.classList.toggle('hidden',!['command_staff','instructor'].includes(role));
+      if(role==='instructor')admin.textContent='Admin Control Center';
+    }
   }
-  function applySession(session){
+  async function applySession(session){
     const signedIn=!!session?.user;
+    let role=null;
+    if(signedIn){
+      try{
+        const client=getClient();
+        const {data}=await client.from('profiles').select('role').eq('id',session.user.id).single();
+        role=data?.role||'cadet';
+      }catch(e){role='cadet'}
+    }
     document.body.classList.toggle('account-shell',signedIn);document.body.classList.toggle('guest-shell',!signedIn);
     document.body.classList.remove('site-rail-open','admin-rail-open');
-    setBrand(signedIn);ensureNav(signedIn);orderControls(signedIn);document.body.classList.remove('shell-loading');
+    document.body.dataset.userRole=role||'guest';
+    if(role==='instructor'&&currentPage()==='cadet-dashboard'){
+      location.href='/?open=home';
+      return;
+    }
+    setBrand(signedIn);ensureNav(signedIn,role);orderControls(signedIn,role);document.body.classList.remove('shell-loading');
   }
   function getClient(){
     try{if(typeof sb!=='undefined'&&sb?.auth)return sb}catch(e){}
@@ -116,7 +141,7 @@
     document.body.classList.add('shell-loading');
     try{
       const client=getClient();if(!client){setTimeout(init,80);return}
-      const {data}=await client.auth.getSession();applySession(data?.session||null);
+      const {data}=await client.auth.getSession();await applySession(data?.session||null);
       if(!window.__afjrotcShellAuthListener){window.__afjrotcShellAuthListener=true;client.auth.onAuthStateChange((_e,s)=>applySession(s))}
     }catch(e){console.warn('Site shell auth sync failed',e);applySession(null)}
   }
