@@ -3,6 +3,9 @@
   "git": {
     "deploymentEnabled": true
   },
+  "redirects": [
+    { "source": "/uniform-day.html", "destination": "/?open=cadet-dashboard", "permanent": false }
+  ],
   "headers": [
     {
       "source": "/(.*)",
