@@ -27,6 +27,15 @@ function mount(){
   const form=$('createCadetForm');
   if(form&&!form.dataset.createCadetBound){form.dataset.createCadetBound='1';form.addEventListener('submit',createAccount)}
 }
+async function getFunctionError(error){
+  try{
+    if(error?.context?.json){
+      const body=await error.context.json();
+      if(body?.error)return body.error;
+    }
+  }catch(_e){}
+  return error?.message||'Could not create account.';
+}
 async function createAccount(e){
   e.preventDefault();
   const client=window.adminSupabase;
@@ -36,11 +45,12 @@ async function createAccount(e){
   status.textContent='Creating account…';submit.disabled=true;
   try{
     const {data,error}=await client.functions.invoke('create-cadet-account',{body});
-    if(error)throw error;if(!data?.ok)throw new Error(data?.error||'Could not create account.');
+    if(error){status.textContent=await getFunctionError(error);return}
+    if(!data?.ok){status.textContent=data?.error||'Could not create account.';return}
     status.textContent='Account created successfully.';e.currentTarget.reset();
     if(typeof window.openCadetManagement==='function')window.openCadetManagement();
     setTimeout(()=>{$('createCadetModal')?.classList.add('hidden');location.reload()},700);
-  }catch(err){status.textContent=err?.message||'Could not create account.'}
+  }catch(err){status.textContent=await getFunctionError(err)}
   finally{submit.disabled=false}
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
