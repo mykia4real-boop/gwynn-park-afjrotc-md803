@@ -1,11 +1,11 @@
 (()=>{
-  if(window.__finalShellV121)return;
-  window.__finalShellV121=true;
+  if(window.__finalShellV122)return;
+  window.__finalShellV122=true;
   const ORDER=['home','announcements','calendar','uniform','board','resources','gallery'];
   const LABELS={home:'Dashboard',announcements:'Announcements',calendar:'Calendar',uniform:'Uniform',board:'Message Board',resources:'Resources',gallery:'Gallery'};
 
   const style=document.createElement('style');
-  style.id='finalShellV121Styles';
+  style.id='finalShellV122Styles';
   style.textContent=`
   @media(min-width:1024px){
     body.guest-shell .public-header{
@@ -35,6 +35,24 @@
   `;
   document.head.appendChild(style);
 
+  function navigatePublic(page){
+    const admin=document.getElementById('adminApp');
+    const site=document.getElementById('publicSite');
+    const footer=document.getElementById('publicFooter');
+    const header=document.querySelector('.public-header');
+    admin?.classList.add('hidden');
+    site?.classList.remove('hidden');
+    footer?.classList.remove('hidden');
+    header?.classList.remove('hidden');
+    document.querySelectorAll('.public-page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('public-'+page)?.classList.add('active');
+    document.querySelectorAll('.public-nav [data-public]').forEach(b=>b.classList.toggle('active',b.dataset.public===page));
+    document.querySelectorAll('.guest-fixed-nav [data-fixed-public]').forEach(b=>b.classList.toggle('active',b.dataset.fixedPublic===page));
+    document.getElementById('mobileNav')?.classList.add('hidden');
+    document.getElementById('mobileMenuBtn')?.setAttribute('aria-expanded','false');
+    window.scrollTo(0,0);
+  }
+
   function makeGuestNav(){
     const header=document.querySelector('.public-header');
     const original=header?.querySelector('.public-nav');
@@ -47,15 +65,19 @@
       ORDER.forEach(key=>{
         const btn=document.createElement('button');
         btn.type='button';
-        btn.dataset.public=key;
         btn.dataset.fixedPublic=key;
         btn.textContent=LABELS[key];
+        btn.addEventListener('click',e=>{
+          e.preventDefault();
+          e.stopPropagation();
+          navigatePublic(key);
+        });
         fixed.appendChild(btn);
       });
       const sign=document.getElementById('signInBtn');
       header.insertBefore(fixed,sign||null);
     }
-    const current=original.querySelector('button.active[data-public]')?.dataset.public||document.querySelector('.public-page.active')?.id?.replace('public-','')||'home';
+    const current=document.querySelector('.public-page.active')?.id?.replace('public-','')||'home';
     fixed.querySelectorAll('button[data-fixed-public]').forEach(b=>b.classList.toggle('active',b.dataset.fixedPublic===current));
   }
 
@@ -73,10 +95,9 @@
       if(brand){const c=brand.querySelector('.crest');if(c)c.textContent='803';const s=brand.querySelector('strong');if(s)s.textContent='MD-803 AFJROTC';const sm=brand.querySelector('small');if(sm)sm.textContent='GWYNN PARK HIGH SCHOOL'}
       const sign=document.getElementById('signInBtn');if(sign){sign.textContent='Sign In';sign.classList.remove('hidden')}
       makeGuestNav();
-    }catch(e){console.warn('v121 shell sync',e)}
+    }catch(e){console.warn('v122 shell sync',e)}
   }
   sync();
   [200,600,1200,2500,5000].forEach(ms=>setTimeout(sync,ms));
-  document.addEventListener('click',e=>{if(e.target.closest('[data-public]'))setTimeout(makeGuestNav,20)});
   if(typeof sb!=='undefined'&&sb?.auth)sb.auth.onAuthStateChange(()=>setTimeout(sync,0));
 })();
