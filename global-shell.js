@@ -1,7 +1,7 @@
 (()=>{
   const style=document.createElement('style');
   style.id='standaloneUnifiedShellGuard';
-  style.textContent=`.public-header .public-nav{display:none!important}body.shell-loading .public-header{visibility:hidden!important}`;
+  style.textContent=`.public-header .public-nav{display:none!important}body.shell-loading .public-header{visibility:hidden!important}.guide-head .day-link[href*="uniform-day"]{display:none!important}`;
   document.head.appendChild(style);
   if(window.__afjrotcUnifiedShell)return;
   if(document.querySelector('script[data-unified-site-shell]'))return;
