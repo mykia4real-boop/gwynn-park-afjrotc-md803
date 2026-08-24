@@ -5,6 +5,11 @@
   const labels={service_coat:'Service Coat',lightweight_jacket:'Lightweight Jacket',ocp:'OCPs',pt_gear:'Military-Issued PT Gear'};
   const defaults={service_coat:{url:'/assets/service-coat.jpg',alt:'AFJROTC service coat reference photo'}};
 
+  function markReady(){
+    document.body.dataset.standaloneDataReady='1';
+    window.dispatchEvent(new Event('afjrotc:standalone-data-ready'));
+  }
+
   function addStyles(){
     if(document.getElementById('uniformGuideLiveStyles'))return;
     const s=document.createElement('style');s.id='uniformGuideLiveStyles';s.textContent=`
@@ -77,18 +82,36 @@
     return true;
   }
 
+  function waitForInitialImages(){
+    const imgs=[...document.querySelectorAll('.uniform-guide-live-photo')];
+    if(!imgs.length)return Promise.resolve();
+    const waits=imgs.map(img=>{
+      if(img.complete)return Promise.resolve();
+      return new Promise(resolve=>{
+        img.addEventListener('load',resolve,{once:true});
+        img.addEventListener('error',resolve,{once:true});
+      });
+    });
+    return Promise.race([Promise.all(waits),new Promise(resolve=>setTimeout(resolve,1800))]);
+  }
+
   async function init(){
     if(!window.supabase){setTimeout(init,120);return}
     addStyles();
-    const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-    const {data,error}=await client.from('uniform_guide_images').select('slot,storage_path,alt_text');
-    const rows=error?[]:(data||[]);if(error)console.error('Uniform guide photos',error);
-    const bySlot=new Map(rows.map(row=>[row.slot,row]));
-    const apply=()=>{
-      Object.entries(defaults).forEach(([slot,item])=>{if(!bySlot.has(slot))placePhoto(slot,item.url,item.alt);});
-      rows.forEach(row=>{const url=client.storage.from('uniform-guide').getPublicUrl(row.storage_path).data.publicUrl;placePhoto(row.slot,url,row.alt_text);});
-    };
-    apply();setTimeout(apply,500);setTimeout(apply,1500);setTimeout(apply,3000);
+    try{
+      const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+      const {data,error}=await client.from('uniform_guide_images').select('slot,storage_path,alt_text');
+      const rows=error?[]:(data||[]);if(error)console.error('Uniform guide photos',error);
+      const bySlot=new Map(rows.map(row=>[row.slot,row]));
+      const apply=()=>{
+        Object.entries(defaults).forEach(([slot,item])=>{if(!bySlot.has(slot))placePhoto(slot,item.url,item.alt);});
+        rows.forEach(row=>{const url=client.storage.from('uniform-guide').getPublicUrl(row.storage_path).data.publicUrl;placePhoto(row.slot,url,row.alt_text);});
+      };
+      apply();
+      await waitForInitialImages();
+      markReady();
+      setTimeout(apply,500);setTimeout(apply,1500);setTimeout(apply,3000);
+    }catch(e){console.error('Uniform guide initialization',e);markReady()}
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
