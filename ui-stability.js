@@ -27,8 +27,13 @@
   `;
   document.head.appendChild(style);
 
-  function targetFor(page){return document.getElementById('public-'+page)}
-  function readActive(){return document.querySelector('.public-page.active')?.id?.replace(/^public-/,'')||stablePage||'home'}
+  function targetFor(page){
+    return document.getElementById('public-'+page);
+  }
+
+  function readActive(){
+    return document.querySelector('.public-page.active')?.id?.replace(/^public-/,'')||stablePage||'home';
+  }
 
   function enforce(page=stablePage){
     const target=targetFor(page)||targetFor(readActive())||document.querySelector('.public-page');
@@ -92,20 +97,35 @@
   }
 
   function revealWhenReady(){
-    const reveal=()=>{
-      if(body.classList.contains('shell-loading'))return false;
+    let revealed=false;
+    const finishReveal=()=>{
+      if(revealed)return;
+      revealed=true;
       stablePage=readActive();
       enforce(stablePage);
       requestAnimationFrame(()=>requestAnimationFrame(()=>{
         body.classList.remove('site-booting');
         body.classList.add('site-stable-ready');
       }));
+    };
+
+    const waitForQuiet=()=>{
+      if(body.classList.contains('shell-loading'))return false;
+      const root=publicSite||body;
+      let quietTimer;
+      const stop=()=>{clearTimeout(quietTimer);quietObserver.disconnect();clearTimeout(maxTimer);finishReveal()};
+      const arm=()=>{clearTimeout(quietTimer);quietTimer=setTimeout(stop,140)};
+      const quietObserver=new MutationObserver(arm);
+      quietObserver.observe(root,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class','style','src']});
+      const maxTimer=setTimeout(stop,1200);
+      arm();
       return true;
     };
-    if(reveal())return;
-    const observer=new MutationObserver(()=>{if(reveal())observer.disconnect()});
-    observer.observe(body,{attributes:true,attributeFilter:['class']});
-    setTimeout(()=>{if(!body.classList.contains('shell-loading'))reveal()},1200);
+
+    if(waitForQuiet())return;
+    const shellObserver=new MutationObserver(()=>{if(waitForQuiet())shellObserver.disconnect()});
+    shellObserver.observe(body,{attributes:true,attributeFilter:['class']});
+    setTimeout(()=>{if(!body.classList.contains('shell-loading'))waitForQuiet()},1400);
   }
 
   revealWhenReady();
