@@ -6,11 +6,20 @@
     async function load(){const {data,error}=await hb.from('handbook_sections').select('section_key,title,body');if(error)return;(data||[]).forEach(x=>{if(map[x.section_key])replaceCard(x.title||map[x.section_key],x.body||'')});const recognition=(data||[]).find(x=>x.section_key==='recognition');if(recognition){const section=[...document.querySelectorAll('.section h2')].find(x=>x.textContent.trim()==='Awards & Recognition')?.closest('.section');const p=section?.querySelector('.section-head p');if(p)p.textContent=recognition.body}}
     load();
   }
+
   if(!window.__afjrotcUnifiedShell&&!document.querySelector('script[data-unified-site-shell]')){
     const s=document.createElement('script');
     s.src='/site-shell.js?release=20260824-shell-sync';
     s.async=false;
     s.dataset.unifiedSiteShell='1';
     document.head.appendChild(s);
+  }
+
+  if(!window.__afjrotcRanksRouteFix&&!document.querySelector('script[data-ranks-route-fix]')){
+    const r=document.createElement('script');
+    r.src='/ranks-direct-link.js?release=20260824-shell-sync';
+    r.async=false;
+    r.dataset.ranksRouteFix='1';
+    document.head.appendChild(r);
   }
 })();
