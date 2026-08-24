@@ -17,15 +17,15 @@
     if(!$('accountInstructorNote'))$('cadetEditStatus')?.insertAdjacentHTML('beforebegin','<div id="accountInstructorNote" class="instructor-edit-note full hidden">Instructor accounts only use the account name, login email, and Instructor role. Cadet fields do not apply.</div>');
     removeAllDeleteZones();
   }
-  function syncInstructorFields(){ensureLoginEmailField();const instructor=$('editRole')?.value==='instructor';document.querySelectorAll('#cadetEditForm [data-account-cadet-only]').forEach(label=>label.classList.toggle('hidden',instructor));$('accountInstructorNote')?.classList.toggle('hidden',!instructor)}
-  async function loadAccount(id){const client=window.adminSupabase;if(!client||!id)return null;const {data,error}=await client.from('profiles').select('id,full_name,email,role,rank,flight,position,parent_email,parent_phone').eq('id',id).maybeSingle();if(error){console.warn('Could not load selected account',error);return null}return data||null}
+  function syncInstructorFields(){ensureLoginEmailField();const managementOnly=$('editRole')?.value==='instructor'||!!selectedAccount?.is_owner;document.querySelectorAll('#cadetEditForm [data-account-cadet-only]').forEach(label=>label.classList.toggle('hidden',managementOnly));$('accountInstructorNote')?.classList.toggle('hidden',$('editRole')?.value!=='instructor')}
+  async function loadAccount(id){const client=window.adminSupabase;if(!client||!id)return null;const {data,error}=await client.from('profiles').select('id,full_name,email,role,rank,flight,position,parent_email,parent_phone,is_owner').eq('id',id).maybeSingle();if(error){console.warn('Could not load selected account',error);return null}return data||null}
 
   async function renderDeleteAction(id=currentSelectedId()){
     const token=++renderToken;removeAllDeleteZones();
     if(!id||!cadetWorkspaceVisible())return;
     const account=await loadAccount(id);
     if(token!==renderToken||!cadetWorkspaceVisible()||currentSelectedId()!==id)return;
-    selectedAccount=account;if(!account||account.role==='instructor')return;
+    selectedAccount=account;if(!account||account.is_owner||account.role==='instructor')return;
     const detail=$('cadetDetailBody'),body=detail?.querySelector('.detail-body')||detail;if(!body)return;
     removeAllDeleteZones();
     const zone=document.createElement('section');zone.id='visibleCadetDeleteAction';zone.className='detail-section cadet-danger-zone';zone.dataset.accountId=id;
@@ -42,7 +42,7 @@
     try{const {data,error}=await client.functions.invoke('manage-cadet-account',{body});if(error){status.textContent=await getFunctionError(error,'Could not save the account.');return}if(!data?.ok){status.textContent=data?.error||'Could not save the account.';return}status.textContent='Account saved.';if(typeof window.refreshCadetManagement==='function')await window.refreshCadetManagement();setTimeout(()=>{$('cadetEditModal')?.classList.add('hidden');renderDeleteAction(id)},300)}catch(err){status.textContent=await getFunctionError(err,'Could not save the account.')}
   }
   async function deleteAccount(){
-    const client=window.adminSupabase;if(!client)return;const zone=$('visibleCadetDeleteAction'),id=zone?.dataset.accountId;const account=(selectedAccount?.id===id?selectedAccount:await loadAccount(id));if(!account||account.role==='instructor')return;
+    const client=window.adminSupabase;if(!client)return;const zone=$('visibleCadetDeleteAction'),id=zone?.dataset.accountId;const account=(selectedAccount?.id===id?selectedAccount:await loadAccount(id));if(!account||account.is_owner||account.role==='instructor')return;
     const label=account.full_name||account.email||'this cadet';if(!confirm(`Delete ${label}'s cadet account? This removes their login and cadet records and cannot be undone.`))return;
     const button=$('visibleCadetDeleteBtn'),status=$('visibleCadetDeleteStatus');if(button)button.disabled=true;if(status)status.textContent='Deleting account…';
     try{const {data,error}=await client.functions.invoke('manage-cadet-account',{body:{action:'delete',id:account.id}});if(error){if(status)status.textContent=await getFunctionError(error,'Could not delete the account.');return}if(!data?.ok){if(status)status.textContent=data?.error||'Could not delete the account.';return}selectedAccount=null;removeAllDeleteZones();if(typeof window.refreshCadetManagement==='function')await window.refreshCadetManagement();else location.reload()}catch(err){if(status)status.textContent=await getFunctionError(err,'Could not delete the account.')}finally{if(button)button.disabled=false}
