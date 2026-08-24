@@ -45,7 +45,11 @@ function renderSummary(){
 }
 function filteredRows(){
   const q=($('cadetSearch')?.value||'').trim().toLowerCase(),role=$('cadetRoleFilter')?.value||'',flight=$('cadetFlightFilter')?.value||'';
-  return cadetRows.filter(p=>(!q||`${p.full_name||''} ${p.rank||''} ${p.role||''} ${p.flight||''} ${p.position||''}`.toLowerCase().includes(q))&&(!role||p.role===role)&&(!flight||p.flight===flight));
+  return cadetRows.filter(p=>{
+    if(['flights','service','leadership'].includes(rosterTab)&&p.role==='instructor')return false;
+    const hay=`${p.full_name||''} ${p.email||''} ${p.rank||''} ${p.role||''} ${p.flight||''} ${p.position||''}`.toLowerCase();
+    return (!q||hay.includes(q))&&(!role||p.role===role)&&(!flight||p.flight===flight);
+  });
 }
 function setupRosterTabs(){
   const buttons=[...document.querySelectorAll('.roster-tabs button')];
@@ -58,15 +62,17 @@ function setupRosterTabs(){
   });
 }
 function rosterColumns(){
-  if(rosterTab==='roles')return ['Cadet Name','Role','Rank','Position','Flight'];
+  if(rosterTab==='roles')return ['Name','Role','Rank','Position','Flight'];
   if(rosterTab==='flights')return ['Cadet Name','Flight / Class','Role','Rank','Position'];
   if(rosterTab==='service')return ['Cadet Name','Service Hours','Flight','Role','Position'];
   if(rosterTab==='leadership')return ['Cadet Name','Leadership Points','Role','Flight','Position'];
-  return ['Cadet Name','Role','Flight','Service Hours','Leadership Pts','Position'];
+  return ['Name','Role','Flight','Service Hours','Leadership Pts','Position'];
 }
 function rosterRow(p){
-  const name=`<td class="cadet-name-cell"><b>${esc(p.full_name||'Unnamed Cadet')}</b><span>${esc(p.rank||'Rank not assigned')}</span></td>`;
+  const instructor=p.role==='instructor';
+  const name=`<td class="cadet-name-cell"><b>${esc(p.full_name||'Unnamed Account')}</b><span>${instructor?'Instructor':esc(p.rank||'Rank not assigned')}</span></td>`;
   const role=`<span class="role-pill ${esc(p.role||'cadet')}">${esc(roleLabel(p.role))}</span>`;
+  if(instructor)return `${name}<td>${role}</td><td>—</td><td>—</td><td>—</td><td>—</td>`;
   if(rosterTab==='roles')return `${name}<td>${role}</td><td>${esc(p.rank||'—')}</td><td>${esc(p.position||'—')}</td><td>${esc(p.flight||'—')}</td>`;
   if(rosterTab==='flights')return `${name}<td>${esc(p.flight?p.flight+' Flight':'—')}</td><td>${role}</td><td>${esc(p.rank||'—')}</td><td>${esc(p.position||'—')}</td>`;
   if(rosterTab==='service')return `${name}<td><b>${fmtHours(sumService(p.id))}</b> hrs</td><td>${esc(p.flight||'—')}</td><td>${role}</td><td>${esc(p.position||'—')}</td>`;
@@ -74,46 +80,97 @@ function rosterRow(p){
   return `${name}<td>${role}</td><td>${esc(p.flight||'—')}</td><td>${fmtHours(sumService(p.id))}</td><td>${sumLeadership(p.id).toLocaleString()}</td><td>${esc(p.position||'—')}</td>`;
 }
 function renderRoster(){
-  const flights=[...new Set(cadetRows.map(x=>x.flight).filter(Boolean))].sort(),fs=$('cadetFlightFilter');
+  const flights=[...new Set(cadetRows.filter(x=>x.role!=='instructor').map(x=>x.flight).filter(Boolean))].sort(),fs=$('cadetFlightFilter');
   if(fs){const current=fs.value;fs.innerHTML='<option value="">All flights</option>'+flights.map(f=>`<option value="${esc(f)}">${esc(f)} Flight</option>`).join('');if(flights.includes(current))fs.value=current}
   setupRosterTabs();
   const rows=filteredRows(),thead=document.querySelector('.roster-table thead'),body=$('cadetRosterBody');
   const columns=rosterColumns();
   if(thead)thead.innerHTML=`<tr>${columns.map(c=>`<th>${c}</th>`).join('')}</tr>`;
-  if(body)body.innerHTML=rows.map(p=>`<tr class="roster-row ${p.id===selectedId?'selected':''}" data-cadet-id="${p.id}">${rosterRow(p)}</tr>`).join('')||`<tr><td colspan="${columns.length}" style="color:var(--muted)">No matching cadets.</td></tr>`;
-  if($('cadetRosterCount'))$('cadetRosterCount').textContent=`Showing ${rows.length} of ${cadetRows.length}`;
+  if(body)body.innerHTML=rows.map(p=>`<tr class="roster-row ${p.id===selectedId?'selected':''}" data-cadet-id="${p.id}">${rosterRow(p)}</tr>`).join('')||`<tr><td colspan="${columns.length}" style="color:var(--muted)">No matching accounts.</td></tr>`;
+  const total=['flights','service','leadership'].includes(rosterTab)?cadetRows.filter(x=>x.role!=='instructor').length:cadetRows.length;
+  if($('cadetRosterCount'))$('cadetRosterCount').textContent=`Showing ${rows.length} of ${total}`;
 }
 function changeRosterTab(tab){
   if(!['roster','roles','flights','service','leadership'].includes(tab))return;
   rosterTab=tab;
+  if(['flights','service','leadership'].includes(tab)&&cadetRows.find(x=>x.id===selectedId)?.role==='instructor')selectedId=cadetRows.find(x=>x.role!=='instructor')?.id||null;
   setupRosterTabs();renderRoster();
   if(tab==='service')detailTab='service';
   else if(tab==='leadership')detailTab='leadership';
   else detailTab='overview';
   renderDetail();
 }
-function tabs(){return `<div class="detail-tabs"><button class="${detailTab==='overview'?'active':''}" data-detail-tab="overview" type="button">Overview</button><button class="${detailTab==='service'?'active':''}" data-detail-tab="service" type="button">Service Hours</button><button class="${detailTab==='leadership'?'active':''}" data-detail-tab="leadership" type="button">Leadership</button></div>`}
+function tabs(p){if(p?.role==='instructor')return'';return `<div class="detail-tabs"><button class="${detailTab==='overview'?'active':''}" data-detail-tab="overview" type="button">Overview</button><button class="${detailTab==='service'?'active':''}" data-detail-tab="service" type="button">Service Hours</button><button class="${detailTab==='leadership'?'active':''}" data-detail-tab="leadership" type="button">Leadership</button></div>`}
 function renderDetail(){
-  const p=cadetRows.find(x=>x.id===selectedId),box=$('cadetDetailBody');if(!box)return;if(!p){box.innerHTML='<div class="detail-empty">Select a cadet to view their record.</div>';return}
-  const head=`<div class="detail-top"><h2>${esc(p.full_name||'Cadet')}</h2><p>${esc(p.rank||'Rank not assigned')} · ${esc(roleLabel(p.role))}${p.flight?' · '+esc(p.flight)+' Flight':''}</p></div>${tabs()}`;
+  const p=cadetRows.find(x=>x.id===selectedId),box=$('cadetDetailBody');if(!box)return;if(!p){box.innerHTML='<div class="detail-empty">Select an account to view its record.</div>';return}
+  if(p.role==='instructor'){
+    box.innerHTML=`<div class="detail-top instructor-detail-top"><h2>${esc(p.full_name||'Instructor')}</h2><p>Instructor</p></div><div class="detail-body"><section class="detail-section instructor-only-card"><div class="detail-section-head"><h3>Instructor Account</h3><button type="button" data-edit-cadet="${p.id}">Edit Account</button></div><div class="instructor-role-display"><span class="role-pill instructor">Instructor</span></div></section></div>`;
+    return;
+  }
+  const head=`<div class="detail-top"><h2>${esc(p.full_name||'Cadet')}</h2><p>${esc(p.rank||'Rank not assigned')} · ${esc(roleLabel(p.role))}${p.flight?' · '+esc(p.flight)+' Flight':''}</p></div>${tabs(p)}`;
   if(detailTab==='service'){box.innerHTML=head+renderServiceTab(p);return}
   if(detailTab==='leadership'){box.innerHTML=head+renderLeadershipTab(p);return}
   const sh=sumService(p.id),lp=sumLeadership(p.id);
-  box.innerHTML=head+`<div class="detail-body"><section class="detail-section"><div class="detail-section-head"><h3>Cadet Information</h3><button type="button" data-edit-cadet="${p.id}">Edit</button></div><div class="detail-grid"><div class="detail-field"><small>Role</small><b>${esc(roleLabel(p.role))}</b></div><div class="detail-field"><small>Rank</small><b>${esc(p.rank||'—')}</b></div><div class="detail-field"><small>Flight</small><b>${esc(p.flight||'—')}</b></div><div class="detail-field"><small>Position</small><b>${esc(p.position||'—')}</b></div></div></section><section class="detail-section"><div class="detail-section-head"><h3>Parent Contact</h3><button type="button" data-edit-cadet="${p.id}">Edit</button></div><div class="detail-grid"><div class="detail-field"><small>Parent Email</small><span>${esc(p.parent_email||'Not added')}</span></div><div class="detail-field"><small>Parent Phone</small><span>${esc(p.parent_phone||'Not added')}</span></div></div><p class="contact-note">Only parent email and parent phone are shown in Cadet Management.</p></section><section class="detail-section"><h3 style="margin-bottom:10px">Record Overview</h3><div class="metric-row"><div class="metric-box"><small>Service Hours</small><b>${fmtHours(sh)}</b></div><div class="metric-box"><small>Leadership Points</small><b>${lp.toLocaleString()}</b></div></div></section></div>`;
+  box.innerHTML=head+`<div class="detail-body"><section class="detail-section"><div class="detail-section-head"><h3>Cadet Information</h3><button type="button" data-edit-cadet="${p.id}">Edit Account</button></div><div class="detail-grid"><div class="detail-field"><small>Role</small><b>${esc(roleLabel(p.role))}</b></div><div class="detail-field"><small>Rank</small><b>${esc(p.rank||'—')}</b></div><div class="detail-field"><small>Flight</small><b>${esc(p.flight||'—')}</b></div><div class="detail-field"><small>Position</small><b>${esc(p.position||'—')}</b></div></div></section><section class="detail-section"><div class="detail-section-head"><h3>Parent Contact</h3><button type="button" data-edit-cadet="${p.id}">Edit</button></div><div class="detail-grid"><div class="detail-field"><small>Parent Email</small><span>${esc(p.parent_email||'Not added')}</span></div><div class="detail-field"><small>Parent Phone</small><span>${esc(p.parent_phone||'Not added')}</span></div></div><p class="contact-note">Only parent email and parent phone are shown in Cadet Management.</p></section><section class="detail-section"><h3 style="margin-bottom:10px">Record Overview</h3><div class="metric-row"><div class="metric-box"><small>Service Hours</small><b>${fmtHours(sh)}</b></div><div class="metric-box"><small>Leadership Points</small><b>${lp.toLocaleString()}</b></div></div></section></div>`;
 }
 function renderServiceTab(p){
-  if(p.role==='instructor')return '<div class="detail-body"><section class="detail-section"><p class="record-empty">Service hours are tracked for cadets, not instructors.</p></section></div>';
   const rows=serviceRows.filter(x=>x.cadet_id===p.id);
   return `<div class="detail-body"><section class="detail-section record-editor"><div class="detail-section-head"><h3 id="serviceFormTitle">Add Service Hours</h3></div><form id="serviceRecordForm" class="record-form"><input id="serviceRecordId" type="hidden"><label>Date<input id="serviceDate" type="date" required></label><label>Hours<input id="serviceHours" type="number" min="0.1" step="0.1" required></label><label class="full">Organization<input id="serviceOrg" maxlength="120"></label><label class="full">Description<textarea id="serviceDescription" rows="2" maxlength="500"></textarea></label><div id="serviceRecordStatus" class="record-status full" aria-live="polite"></div><div class="record-actions full"><button type="button" data-reset-service>Clear</button><button class="primary" type="submit">Save Service Hours</button></div></form></section><section class="detail-section"><div class="detail-section-head"><h3>Service History</h3><b>${fmtHours(sumService(p.id))} total hours</b></div><div class="record-list">${rows.map(r=>`<article class="record-row"><div><b>${fmtHours(r.hours)} hrs · ${esc(r.organization||'Community Service')}</b><span>${fmtDate(r.service_date)}${r.description?' · '+esc(r.description):''}</span></div><div class="record-row-actions"><button type="button" data-edit-service="${r.id}">Edit</button><button class="danger" type="button" data-delete-service="${r.id}">Delete</button></div></article>`).join('')||'<p class="record-empty">No service hours recorded yet.</p>'}</div></section></div>`;
 }
 function renderLeadershipTab(p){
-  if(p.role==='instructor')return '<div class="detail-body"><section class="detail-section"><p class="record-empty">Leadership points are awarded to cadets, not instructors.</p></section></div>';
   const rows=leadershipRows.filter(x=>x.cadet_id===p.id);
   return `<div class="detail-body"><section class="detail-section record-editor"><div class="detail-section-head"><h3 id="leadershipFormTitle">Award Leadership Points</h3></div><form id="leadershipRecordForm" class="record-form"><input id="leadershipRecordId" type="hidden"><label>Points<input id="leadershipPoints" type="number" step="1" required></label><label class="full">Reason<textarea id="leadershipReason" rows="2" maxlength="500" required></textarea></label><div id="leadershipRecordStatus" class="record-status full" aria-live="polite"></div><div class="record-actions full"><button type="button" data-reset-leadership>Clear</button><button class="primary" type="submit">Save Leadership Award</button></div></form></section><section class="detail-section"><div class="detail-section-head"><h3>Leadership History</h3><b>${sumLeadership(p.id).toLocaleString()} total points</b></div><div class="record-list">${rows.map(r=>`<article class="record-row"><div><b>${Number(r.points)>0?'+':''}${esc(r.points)} points</b><span>${esc(r.reason||'Leadership award')} · ${new Date(r.created_at).toLocaleDateString()}</span></div><div class="record-row-actions"><button type="button" data-edit-leadership="${r.id}">Edit</button><button class="danger" type="button" data-delete-leadership="${r.id}">Delete</button></div></article>`).join('')||'<p class="record-empty">No leadership awards recorded yet.</p>'}</div></section></div>`;
 }
-function openEdit(id){const p=cadetRows.find(x=>x.id===id);if(!p)return;if(!$('cadetEditModal'))return;$('cadetEditId').value=p.id;$('editName').value=p.full_name||'';$('editRole').value=p.role||'cadet';$('editRank').value=p.rank||'';$('editFlight').value=p.flight||'';$('editPosition').value=p.position||'';$('editParentEmail').value=p.parent_email||'';$('editParentPhone').value=p.parent_phone||'';$('cadetEditStatus').textContent='';$('cadetEditModal').classList.remove('hidden')}
+function ensureEditModal(){
+  const form=$('cadetEditForm');if(!form)return;
+  const modalTitle=document.querySelector('#cadetEditModal .cadet-modal-head h2');if(modalTitle)modalTitle.textContent='Edit Account';
+  if(!$('editEmail')){
+    const nameLabel=$('editName')?.closest('label');
+    nameLabel?.insertAdjacentHTML('afterend','<label class="full">Login Email<input id="editEmail" type="email" required autocomplete="off"></label>');
+  }
+  ['editRank','editFlight','editPosition','editParentEmail','editParentPhone'].forEach(id=>$(id)?.closest('label')?.setAttribute('data-cadet-only','1'));
+  if(!$('instructorEditNote')){
+    const status=$('cadetEditStatus');status?.insertAdjacentHTML('beforebegin','<div id="instructorEditNote" class="instructor-edit-note full hidden">Instructor accounts only use the account name, login email, and Instructor role here. Cadet fields do not apply.</div>');
+  }
+  const actions=form.querySelector('.cadet-form-actions');
+  if(actions&&!$('deleteCadetAccountBtn'))actions.insertAdjacentHTML('afterbegin','<button id="deleteCadetAccountBtn" class="danger account-delete-btn" type="button">Delete Cadet Account</button>');
+}
+function syncEditFields(){
+  ensureEditModal();const instructor=$('editRole')?.value==='instructor';
+  document.querySelectorAll('#cadetEditForm [data-cadet-only]').forEach(x=>x.classList.toggle('hidden',instructor));
+  $('instructorEditNote')?.classList.toggle('hidden',!instructor);
+  $('deleteCadetAccountBtn')?.classList.toggle('hidden',instructor);
+}
+function openEdit(id){
+  ensureEditModal();const p=cadetRows.find(x=>x.id===id);if(!p)return;if(!$('cadetEditModal'))return;
+  $('cadetEditId').value=p.id;$('editName').value=p.full_name||'';$('editEmail').value=p.email||'';$('editRole').value=p.role||'cadet';$('editRank').value=p.rank||'';$('editFlight').value=p.flight||'';$('editPosition').value=p.position||'';$('editParentEmail').value=p.parent_email||'';$('editParentPhone').value=p.parent_phone||'';$('cadetEditStatus').textContent='';syncEditFields();$('cadetEditModal').classList.remove('hidden');
+}
 function closeEdit(){$('cadetEditModal')?.classList.add('hidden')}
-async function saveEdit(e){e.preventDefault();const client=window.adminSupabase;if(!client)return;const id=$('cadetEditId').value,payload={full_name:$('editName').value.trim(),role:$('editRole').value,rank:$('editRank').value.trim()||null,flight:$('editFlight').value.trim()||null,position:$('editPosition').value.trim()||null,parent_email:$('editParentEmail').value.trim()||null,parent_phone:$('editParentPhone').value.trim()||null};$('cadetEditStatus').textContent='Saving…';const {error}=await client.from('profiles').update(payload).eq('id',id);if(error){$('cadetEditStatus').textContent=error.message;return}$('cadetEditStatus').textContent='Saved.';await loadCadets();setTimeout(closeEdit,450)}
+async function functionError(error,fallback){try{if(error?.context?.json){const body=await error.context.json();if(body?.error)return body.error}}catch(_e){}return error?.message||fallback}
+async function saveEdit(e){
+  e.preventDefault();const client=window.adminSupabase;if(!client)return;const id=$('cadetEditId').value,status=$('cadetEditStatus');
+  const payload={action:'update',id,full_name:$('editName').value.trim(),email:$('editEmail').value.trim(),role:$('editRole').value,rank:$('editRank').value.trim(),flight:$('editFlight').value.trim(),position:$('editPosition').value.trim(),parent_email:$('editParentEmail').value.trim(),parent_phone:$('editParentPhone').value.trim()};
+  status.textContent='Saving account…';
+  try{
+    const {data,error}=await client.functions.invoke('manage-cadet-account',{body:payload});
+    if(error){status.textContent=await functionError(error,'Could not save the account.');return}
+    if(!data?.ok){status.textContent=data?.error||'Could not save the account.';return}
+    status.textContent='Account saved.';await loadCadets();setTimeout(closeEdit,450);
+  }catch(err){status.textContent=await functionError(err,'Could not save the account.')}
+}
+async function deleteCadetAccount(){
+  const client=window.adminSupabase,id=$('cadetEditId')?.value,p=cadetRows.find(x=>x.id===id),status=$('cadetEditStatus');if(!client||!p||p.role==='instructor')return;
+  const label=p.full_name||p.email||'this cadet';
+  if(!confirm(`Delete ${label}'s cadet account? This removes their login and cadet records and cannot be undone.`))return;
+  status.textContent='Deleting account…';$('deleteCadetAccountBtn').disabled=true;
+  try{
+    const {data,error}=await client.functions.invoke('manage-cadet-account',{body:{action:'delete',id:p.id}});
+    if(error){status.textContent=await functionError(error,'Could not delete the account.');return}
+    if(!data?.ok){status.textContent=data?.error||'Could not delete the account.';return}
+    selectedId=null;closeEdit();await loadCadets();
+  }catch(err){status.textContent=await functionError(err,'Could not delete the account.')}
+  finally{if($('deleteCadetAccountBtn'))$('deleteCadetAccountBtn').disabled=false}
+}
 async function saveService(e){e.preventDefault();const client=window.adminSupabase,id=$('serviceRecordId').value,payload={cadet_id:selectedId,service_date:$('serviceDate').value,hours:Number($('serviceHours').value),organization:$('serviceOrg').value.trim()||null,description:$('serviceDescription').value.trim()||null};$('serviceRecordStatus').textContent='Saving…';let q;if(id)q=client.from('community_service_hours').update(payload).eq('id',id);else{const {data:{user}}=await client.auth.getUser();payload.created_by=user?.id||null;q=client.from('community_service_hours').insert(payload)}const {error}=await q;if(error){$('serviceRecordStatus').textContent=error.message;return}await loadCadets();detailTab='service';renderDetail();renderRoster()}
 async function saveLeadership(e){e.preventDefault();const client=window.adminSupabase,id=$('leadershipRecordId').value,payload={cadet_id:selectedId,points:Number($('leadershipPoints').value),reason:$('leadershipReason').value.trim()};$('leadershipRecordStatus').textContent='Saving…';let q;if(id)q=client.from('leadership_point_awards').update(payload).eq('id',id);else{const {data:{user}}=await client.auth.getUser();payload.awarded_by=user?.id||null;q=client.from('leadership_point_awards').insert(payload)}const {error}=await q;if(error){$('leadershipRecordStatus').textContent=error.message;return}await loadCadets();detailTab='leadership';renderDetail();renderRoster()}
 function editService(id){const r=serviceRows.find(x=>String(x.id)===String(id));if(!r)return;$('serviceRecordId').value=r.id;$('serviceDate').value=r.service_date||'';$('serviceHours').value=r.hours||'';$('serviceOrg').value=r.organization||'';$('serviceDescription').value=r.description||'';$('serviceFormTitle').textContent='Edit Service Hours'}
@@ -133,9 +190,12 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-reset-service]')){renderDetail();return}
   if(e.target.closest('[data-reset-leadership]')){renderDetail();return}
   if(e.target.closest('[data-close-cadet-edit]')){closeEdit();return}
+  if(e.target.closest('#deleteCadetAccountBtn')){deleteCadetAccount();return}
 });
 document.addEventListener('submit',e=>{if(e.target.id==='serviceRecordForm')saveService(e);if(e.target.id==='leadershipRecordForm')saveLeadership(e)});
-$('cadetSearch')?.addEventListener('input',renderRoster);$('cadetRoleFilter')?.addEventListener('change',renderRoster);$('cadetFlightFilter')?.addEventListener('change',renderRoster);$('cadetEditForm')?.addEventListener('submit',saveEdit);
+$('cadetSearch')?.addEventListener('input',renderRoster);$('cadetRoleFilter')?.addEventListener('change',renderRoster);$('cadetFlightFilter')?.addEventListener('change',renderRoster);$('cadetEditForm')?.addEventListener('submit',saveEdit);$('editRole')?.addEventListener('change',syncEditFields);
+ensureEditModal();
 setupRosterTabs();
 window.openCadetManagement=()=>showWorkspace('cadets');
+window.refreshCadetManagement=loadCadets;
 })();
