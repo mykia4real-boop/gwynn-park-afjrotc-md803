@@ -2,6 +2,7 @@
 const $=id=>document.getElementById(id);let uniform=null;
 async function safe(p,f=[]){try{const {data,error}=await p;if(error)throw error;return data??f}catch(e){console.warn(e);return f}}
 function loadCurrentSiteTools(){if(window.__afjrotcSiteManagement||document.querySelector('script[data-current-site-tools]'))return;const s=document.createElement('script');s.src='/admin-site.js?v=110';s.async=false;s.dataset.currentSiteTools='1';document.body.appendChild(s)}
+function loadCadetAccountActions(){if(window.__cadetAccountActionsV2||document.querySelector('script[data-cadet-account-actions]'))return;const s=document.createElement('script');s.src='/cadet-account-actions.js?release=20260824-visible-delete';s.async=false;s.dataset.cadetAccountActions='1';document.body.appendChild(s)}
 function ensureUniversalPublicButton(){
  document.querySelector('.admin-version')?.remove();
  document.querySelectorAll('#adminShell a').forEach(a=>{const t=(a.textContent||'').trim().toLowerCase();if(t==='view public site'||t==='view site as public')a.remove()});
@@ -10,7 +11,7 @@ function ensureUniversalPublicButton(){
 }
 function ensureUI(){
  document.getElementById('adminResourceUniformTools')?.remove();
- ensureUniversalPublicButton();loadCurrentSiteTools();
+ ensureUniversalPublicButton();loadCurrentSiteTools();loadCadetAccountActions();
  if($('adminUniformDayTool'))return;
  const side=document.querySelector('#contentWorkspace .content-side-panel');if(!side)return;
  const box=document.createElement('section');box.id='adminUniformDayTool';box.className='content-card';box.innerHTML=`<div class="content-card-head"><h3>Uniform of the Day</h3></div><form id="adminUniformDayForm" class="content-form"><label class="full">Uniform<select id="adminUniformDayName"><option>Service Coat</option><option>Lightweight Jacket</option><option>OCP</option><option>PT Gear</option><option>Other</option></select></label><label class="full">Wear Date<input id="adminUniformDayDate" type="date"></label><label class="full">Notes<textarea id="adminUniformDayNotes" rows="4" maxlength="1000" placeholder="Items to wear, reminders, or exceptions"></textarea></label><div id="adminUniformDayStatus" class="content-status full"></div><div class="content-form-actions"><button class="primary" type="submit">Update Uniform of the Day</button></div></form>`;side.appendChild(box)
@@ -21,5 +22,5 @@ async function saveUniform(e){e.preventDefault();const c=window.adminSupabase,{d
 document.addEventListener('submit',e=>{if(e.target.id==='adminUniformDayForm')saveUniform(e)});
 document.addEventListener('click',e=>{if(e.target.closest('[data-section="content"]'))setTimeout(load,0)},true);
 window.addEventListener('load',()=>setTimeout(load,450));
-setTimeout(()=>{ensureUI();ensureUniversalPublicButton();loadCurrentSiteTools()},100);setTimeout(()=>{ensureUI();ensureUniversalPublicButton();loadCurrentSiteTools()},900);
+setTimeout(()=>{ensureUI();ensureUniversalPublicButton();loadCurrentSiteTools();loadCadetAccountActions()},100);setTimeout(()=>{ensureUI();ensureUniversalPublicButton();loadCurrentSiteTools();loadCadetAccountActions()},900);
 })();
