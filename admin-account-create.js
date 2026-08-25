@@ -3,6 +3,7 @@ const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let managedFlights=[];
 let flightCounts={};
+let accountCreateInFlight=false;
 
 function cleanFlightName(value){return String(value||'').trim().replace(/\s+flight$/i,'').trim()}
 function syncRoleFields(){
@@ -25,8 +26,17 @@ function ensureFlightStyles(){
     .flight-manage-row div{display:grid;gap:3px}.flight-manage-row b{font-size:.96rem}.flight-manage-row span{font-size:.8rem;color:var(--muted,#8f99aa)}
     .flight-delete-btn{border:1px solid rgba(220,70,70,.45)!important;color:#ff8a8a!important;background:rgba(220,70,70,.08)!important}
     .flight-empty{padding:22px;text-align:center;color:var(--muted,#8f99aa);border:1px dashed var(--line,#2d3440);border-radius:12px}
-    @media(max-width:640px){.flight-manager-form{grid-template-columns:1fr}.flight-manage-row{align-items:flex-start}.flight-delete-btn{flex:0 0 auto}}
+    .account-create-toast{position:fixed;right:20px;bottom:20px;z-index:5000;max-width:min(360px,calc(100vw - 32px));padding:13px 16px;border-radius:12px;background:#0d2f4d;color:#fff;border:1px solid rgba(255,216,61,.38);box-shadow:0 16px 40px rgba(0,0,0,.3);font-weight:850;font-size:13px;opacity:0;transform:translateY(8px);transition:opacity .18s ease,transform .18s ease;pointer-events:none}.account-create-toast.show{opacity:1;transform:translateY(0)}
+    @media(max-width:640px){.flight-manager-form{grid-template-columns:1fr}.flight-manage-row{align-items:flex-start}.flight-delete-btn{flex:0 0 auto}.account-create-toast{left:16px;right:16px;bottom:16px;max-width:none}}
   `;document.head.appendChild(style);
+}
+function showCreateToast(message){
+  let toast=$('accountCreateToast');
+  if(!toast){toast=document.createElement('div');toast.id='accountCreateToast';toast.className='account-create-toast';toast.setAttribute('role','status');toast.setAttribute('aria-live','polite');document.body.appendChild(toast)}
+  toast.textContent=message;
+  requestAnimationFrame(()=>toast.classList.add('show'));
+  clearTimeout(showCreateToast.timer);
+  showCreateToast.timer=setTimeout(()=>toast.classList.remove('show'),2600);
 }
 function ensureFlightDatalist(){
   let list=$('managedFlightOptions');
@@ -121,7 +131,7 @@ function mount(){
   }
   if(!document.body.dataset.createCadetCloseBound){
     document.body.dataset.createCadetCloseBound='1';
-    document.addEventListener('click',e=>{if(e.target.closest('[data-close-create-cadet]'))$('createCadetModal')?.classList.add('hidden');if(e.target.closest('[data-edit-cadet]'))loadFlights(false)});
+    document.addEventListener('click',e=>{if(e.target.closest('[data-close-create-cadet]')&&!accountCreateInFlight)$('createCadetModal')?.classList.add('hidden');if(e.target.closest('[data-edit-cadet]'))loadFlights(false)});
   }
   const form=$('createCadetForm');
   if(form&&!form.dataset.createCadetBound){form.dataset.createCadetBound='1';form.addEventListener('submit',createAccount)}
@@ -133,22 +143,41 @@ async function getFunctionError(error){
 }
 async function createAccount(e){
   e.preventDefault();
-  const client=window.adminSupabase,submit=$('createCadetSubmit'),status=$('createCadetStatus');
+  if(accountCreateInFlight)return;
+  const client=window.adminSupabase,submit=$('createCadetSubmit'),status=$('createCadetStatus'),form=e.currentTarget,modal=$('createCadetModal');
   if(!client){if(status)status.textContent='Admin connection is not ready yet. Refresh and try again.';return}
   const instructor=$('createCadetRole').value==='instructor';
   const flight=instructor?'':cleanFlightName($('createCadetFlight').value);
   if(flight&&!managedFlights.some(f=>f.name===flight)){status.textContent='Create that flight in Manage Flights before assigning it to a cadet.';return}
-  const body={full_name:$('createCadetName').value.trim(),email:$('createCadetEmail').value.trim(),password:$('createCadetPassword').value,role:$('createCadetRole').value,rank:instructor?'':$('createCadetRank').value.trim(),flight,position:instructor?'':$('createCadetPosition').value.trim(),parent_email:instructor?'':$('createParentEmail').value.trim(),parent_phone:instructor?'':$('createParentPhone').value.trim()};
-  status.textContent='Creating account…';submit.disabled=true;
+  const fullName=$('createCadetName').value.trim();
+  const body={full_name:fullName,email:$('createCadetEmail').value.trim(),password:$('createCadetPassword').value,role:$('createCadetRole').value,rank:instructor?'':$('createCadetRank').value.trim(),flight,position:instructor?'':$('createCadetPosition').value.trim(),parent_email:instructor?'':$('createParentEmail').value.trim(),parent_phone:instructor?'':$('createParentPhone').value.trim()};
+  accountCreateInFlight=true;
+  status.textContent='Creating account…';
+  submit.disabled=true;
+  submit.textContent='Creating…';
+  form.setAttribute('aria-busy','true');
   try{
     const {data,error}=await client.functions.invoke('create-cadet-account',{body});
     if(error){status.textContent=await getFunctionError(error);return}
     if(!data?.ok){status.textContent=data?.error||'Could not create account.';return}
-    status.textContent='Account created successfully.';e.currentTarget.reset();syncRoleFields();
+
+    // Close first so the form reset and roster redraw never flash on screen.
+    modal?.classList.add('hidden');
+    showCreateToast(`${fullName||'Account'} created successfully.`);
+    form.reset();
+    syncRoleFields();
+    if(status)status.textContent='';
+
+    // Refresh only after the modal is gone, preventing the page from visually jumping behind it.
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
     if(typeof window.refreshCadetManagement==='function')await window.refreshCadetManagement();
-    setTimeout(()=>{$('createCadetModal')?.classList.add('hidden')},700);
   }catch(err){status.textContent=await getFunctionError(err)}
-  finally{submit.disabled=false}
+  finally{
+    accountCreateInFlight=false;
+    submit.disabled=false;
+    submit.textContent='Create Account';
+    form.removeAttribute('aria-busy');
+  }
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
