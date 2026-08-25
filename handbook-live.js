@@ -20,12 +20,12 @@
     load();
   }else markReady();
 
-  function loadMobileMenu(){
-    if(window.__afjrotcShellMobileMenuV4||document.querySelector('script[data-handbook-mobile-menu]'))return;
+  function loadMobileShell(){
+    if(document.querySelector('script[data-handbook-mobile-shell]'))return;
     const m=document.createElement('script');
-    m.src='/mobile-menu-fix.js?release=20260825-handbook-menu';
+    m.src='/mobile-shell.js?release=20260825-handbook-visible-menu-v2';
     m.async=false;
-    m.dataset.handbookMobileMenu='1';
+    m.dataset.handbookMobileShell='1';
     document.head.appendChild(m);
   }
 
@@ -34,12 +34,13 @@
     s.src='/site-shell.js?release=20260824-shell-sync';
     s.async=false;
     s.dataset.unifiedSiteShell='1';
-    s.addEventListener('load',()=>setTimeout(loadMobileMenu,0),{once:true});
+    s.addEventListener('load',()=>setTimeout(loadMobileShell,0),{once:true});
     document.head.appendChild(s);
   }else{
-    setTimeout(loadMobileMenu,0);
+    setTimeout(loadMobileShell,0);
   }
-  setTimeout(loadMobileMenu,500);
+  setTimeout(loadMobileShell,500);
+  setTimeout(loadMobileShell,1200);
 
   if(!window.__afjrotcRanksRouteFix&&!document.querySelector('script[data-ranks-route-fix]')){
     const r=document.createElement('script');
