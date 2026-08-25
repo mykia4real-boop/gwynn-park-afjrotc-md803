@@ -20,13 +20,42 @@
     load();
   }else markReady();
 
-  function loadMobileShell(){
-    if(document.querySelector('script[data-handbook-mobile-shell]'))return;
-    const m=document.createElement('script');
-    m.src='/mobile-shell.js?release=20260825-handbook-visible-menu-v2';
-    m.async=false;
-    m.dataset.handbookMobileShell='1';
-    document.head.appendChild(m);
+  function ensureHandbookMenu(){
+    const header=document.querySelector('.public-header');
+    if(!header)return false;
+
+    let btn=document.getElementById('mobileMenuBtn');
+    if(!btn){
+      btn=document.createElement('button');
+      btn.id='mobileMenuBtn';
+      btn.className='mobile-menu-btn';
+      btn.type='button';
+      btn.textContent='Menu';
+      btn.setAttribute('aria-expanded','false');
+      const sign=document.getElementById('signInBtn');
+      sign&&sign.parentElement===header?header.insertBefore(btn,sign):header.appendChild(btn);
+    }
+
+    btn.style.setProperty('pointer-events','auto','important');
+    if(window.innerWidth<=1023){
+      btn.style.setProperty('display','inline-flex','important');
+      btn.style.setProperty('visibility','visible','important');
+      btn.style.setProperty('opacity','1','important');
+    }
+
+    if(!window.__afjrotcShellMobileMenuV4&&!document.querySelector('script[data-handbook-menu-controller]')){
+      const m=document.createElement('script');
+      m.src='/mobile-menu-fix.js?release=20260825-handbook-self-heal-v3';
+      m.async=false;
+      m.dataset.handbookMenuController='1';
+      document.head.appendChild(m);
+    }
+    return true;
+  }
+
+  function retryMenu(){
+    if(ensureHandbookMenu())return;
+    setTimeout(retryMenu,180);
   }
 
   if(!window.__afjrotcUnifiedShell&&!document.querySelector('script[data-unified-site-shell]')){
@@ -34,13 +63,15 @@
     s.src='/site-shell.js?release=20260824-shell-sync';
     s.async=false;
     s.dataset.unifiedSiteShell='1';
-    s.addEventListener('load',()=>setTimeout(loadMobileShell,0),{once:true});
+    s.addEventListener('load',()=>setTimeout(retryMenu,0),{once:true});
     document.head.appendChild(s);
   }else{
-    setTimeout(loadMobileShell,0);
+    setTimeout(retryMenu,0);
   }
-  setTimeout(loadMobileShell,500);
-  setTimeout(loadMobileShell,1200);
+  setTimeout(ensureHandbookMenu,500);
+  setTimeout(ensureHandbookMenu,1200);
+  setTimeout(ensureHandbookMenu,2500);
+  window.addEventListener('resize',ensureHandbookMenu,{passive:true});
 
   if(!window.__afjrotcRanksRouteFix&&!document.querySelector('script[data-ranks-route-fix]')){
     const r=document.createElement('script');
