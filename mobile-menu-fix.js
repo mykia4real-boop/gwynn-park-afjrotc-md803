@@ -1,27 +1,25 @@
 (()=>{
-  if(window.__afjrotcShellMobileMenuV3)return;
-  window.__afjrotcShellMobileMenuV3=true;
+  if(window.__afjrotcShellMobileMenuV4)return;
+  window.__afjrotcShellMobileMenuV4=true;
 
-  const STYLE_ID='shellMobileMenuV3Styles';
+  const STYLE_ID='shellMobileMenuV4Styles';
   const PANEL_ID='shellMobileMenu';
 
   if(!document.getElementById(STYLE_ID)){
     const style=document.createElement('style');
     style.id=STYLE_ID;
     style.textContent=`
-      #${PANEL_ID}{display:none!important}
       @media(min-width:1024px){
-        #${PANEL_ID}{display:none!important}
         .public-header .mobile-menu-btn{display:none!important}
+        #${PANEL_ID}{display:none!important}
       }
       @media(max-width:1023px){
-        .public-header{z-index:2147483000!important}
         .public-header .mobile-menu-btn{
           display:inline-flex!important;
           align-items:center!important;
           justify-content:center!important;
           position:relative!important;
-          z-index:2147483002!important;
+          z-index:1002!important;
           pointer-events:auto!important;
           touch-action:manipulation!important;
           min-width:58px!important;
@@ -43,7 +41,7 @@
           border-color:rgba(255,216,61,.55)!important;
           color:#ffd83d!important;
         }
-        #${PANEL_ID}:not(.hidden){
+        #${PANEL_ID}{
           display:grid!important;
           grid-template-columns:1fr!important;
           gap:5px!important;
@@ -54,7 +52,7 @@
           width:auto!important;
           max-height:calc(100dvh - 92px)!important;
           overflow-y:auto!important;
-          z-index:2147483001!important;
+          z-index:1001!important;
           padding:10px!important;
           margin:0!important;
           border:1px solid rgba(143,178,207,.28)!important;
@@ -89,53 +87,49 @@
   }
 
   function getHeader(){return document.querySelector('.public-header')}
+  function getButton(){return document.getElementById('mobileMenuBtn')}
+  function getPanel(){return document.getElementById(PANEL_ID)}
 
-  function ensureButton(){
-    let btn=document.getElementById('mobileMenuBtn');
-    if(!btn){
-      const header=getHeader();
-      if(!header)return null;
-      btn=document.createElement('button');
-      btn.id='mobileMenuBtn';
-      btn.className='mobile-menu-btn';
-      btn.type='button';
-      btn.textContent='Menu';
-      const sign=document.getElementById('signInBtn');
-      sign&&sign.parentElement===header?header.insertBefore(btn,sign):header.appendChild(btn);
+  function removeOldMenu(){
+    const old=document.getElementById('mobileNav');
+    if(old){
+      old.classList.add('hidden');
+      old.style.setProperty('display','none','important');
+      old.style.setProperty('pointer-events','none','important');
+      old.setAttribute('aria-hidden','true');
     }
-    btn.type='button';
-    btn.setAttribute('aria-controls',PANEL_ID);
-    if(!btn.hasAttribute('aria-expanded'))btn.setAttribute('aria-expanded','false');
-    btn.style.setProperty('pointer-events','auto','important');
-    return btn;
-  }
-
-  function ensurePanel(){
-    let panel=document.getElementById(PANEL_ID);
-    if(!panel){
-      panel=document.createElement('nav');
-      panel.id=PANEL_ID;
-      panel.className='hidden';
-      panel.setAttribute('aria-label','Site menu');
-      document.body.appendChild(panel);
-    }
-    return panel;
   }
 
   function closeMenu(){
-    const btn=ensureButton(),panel=ensurePanel();
-    panel.classList.add('hidden');
-    btn?.setAttribute('aria-expanded','false');
+    const btn=getButton();
+    const panel=getPanel();
+    if(panel)panel.remove();
+    if(btn)btn.setAttribute('aria-expanded','false');
+    document.body.classList.remove('shell-mobile-menu-open');
   }
 
-  function rebuildMenu(){
-    const panel=ensurePanel();
-    const shell=document.querySelector('.site-shell-nav');
-    if(!shell)return;
-    const items=[...shell.querySelectorAll('button[data-shell-page]')];
-    if(!items.length)return;
+  function routeFromShell(src){
+    closeMenu();
+    requestAnimationFrame(()=>{
+      try{src.click()}catch(e){
+        const key=src?.dataset?.shellPage||'home';
+        location.href='/?open='+encodeURIComponent(key);
+      }
+    });
+  }
 
-    panel.replaceChildren(...items.map(src=>{
+  function buildPanel(){
+    closeMenu();
+    const shell=document.querySelector('.site-shell-nav');
+    if(!shell)return null;
+    const items=[...shell.querySelectorAll('button[data-shell-page]')];
+    if(!items.length)return null;
+
+    const panel=document.createElement('nav');
+    panel.id=PANEL_ID;
+    panel.setAttribute('aria-label','Site menu');
+
+    items.forEach(src=>{
       const b=document.createElement('button');
       b.type='button';
       b.textContent=(src.innerText||src.textContent||'').trim();
@@ -144,67 +138,70 @@
       b.addEventListener('click',e=>{
         e.preventDefault();
         e.stopPropagation();
-        closeMenu();
-        src.click();
+        routeFromShell(src);
       });
-      return b;
-    }));
+      panel.appendChild(b);
+    });
+
+    document.body.appendChild(panel);
+    return panel;
   }
 
   function openMenu(){
-    const btn=ensureButton(),panel=ensurePanel();
+    const btn=getButton();
     if(!btn)return;
-    rebuildMenu();
-    panel.classList.remove('hidden');
+    const panel=buildPanel();
+    if(!panel)return;
     btn.setAttribute('aria-expanded','true');
+    document.body.classList.add('shell-mobile-menu-open');
   }
 
   function toggleMenu(){
-    const btn=ensureButton(),panel=ensurePanel();
+    const btn=getButton();
     if(!btn)return;
-    const open=btn.getAttribute('aria-expanded')==='true'&&!panel.classList.contains('hidden');
+    const open=btn.getAttribute('aria-expanded')==='true'&&!!getPanel();
     open?closeMenu():openMenu();
   }
 
+  function wireButton(){
+    const btn=getButton();
+    if(!btn)return false;
+    btn.type='button';
+    btn.setAttribute('aria-controls',PANEL_ID);
+    btn.setAttribute('aria-expanded','false');
+    btn.style.setProperty('pointer-events','auto','important');
+    btn.onclick=null;
+
+    if(btn.dataset.shellMenuV4!=='1'){
+      btn.dataset.shellMenuV4='1';
+      btn.addEventListener('click',e=>{
+        if(window.innerWidth>1023)return;
+        e.preventDefault();
+        e.stopPropagation();
+        toggleMenu();
+      });
+    }
+    return true;
+  }
+
   function prepare(){
-    ensureButton();
-    ensurePanel();
-    const old=document.getElementById('mobileNav');
-    if(old){old.setAttribute('aria-hidden','true')}
+    removeOldMenu();
+    wireButton();
+    closeMenu();
   }
 
   document.addEventListener('click',e=>{
-    if(window.innerWidth>1023)return;
-    const trigger=e.target.closest?.('#mobileMenuBtn');
-    if(trigger){
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      toggleMenu();
-      return;
-    }
-    const panel=document.getElementById(PANEL_ID);
-    if(!panel||panel.classList.contains('hidden'))return;
-    if(e.target.closest?.('#'+PANEL_ID))return;
+    const panel=getPanel();
+    if(!panel)return;
+    if(e.target.closest?.('#'+PANEL_ID)||e.target.closest?.('#mobileMenuBtn'))return;
     closeMenu();
-  },true);
+  });
 
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()},true);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
   window.addEventListener('resize',()=>{if(window.innerWidth>1023)closeMenu()},{passive:true});
+  window.addEventListener('pageshow',closeMenu);
 
   prepare();
-  setTimeout(prepare,250);
-  setTimeout(prepare,900);
-  setTimeout(prepare,1800);
-
-  let timer=null;
-  const observer=new MutationObserver(()=>{
-    clearTimeout(timer);
-    timer=setTimeout(()=>{
-      prepare();
-      const btn=document.getElementById('mobileMenuBtn');
-      if(btn?.getAttribute('aria-expanded')==='true')rebuildMenu();
-    },60);
-  });
-  observer.observe(document.body,{childList:true,subtree:true});
+  setTimeout(()=>{removeOldMenu();wireButton()},300);
+  setTimeout(()=>{removeOldMenu();wireButton()},1000);
 })();
