@@ -6,10 +6,241 @@
 <meta http-equiv="Cache-Control" content="no-store,no-cache,must-revalidate,max-age=0">
 <title>Cadet Handbook | Gwynn Park AFJROTC</title>
 <style id="standaloneBoot">body.standalone-loading{margin:0;min-height:100vh;background:#07111d!important;overflow:hidden!important}body.standalone-loading>*:not(script){visibility:hidden!important}body.standalone-loading::before{content:'AFJROTC';position:fixed;inset:0;z-index:2147483646;display:grid;place-items:center;background:#07111d;color:#ffd83d;font:900 22px/1 Arial,sans-serif;letter-spacing:.08em;visibility:visible!important}body.standalone-loading::after{content:'GWYNN PARK HIGH SCHOOL';position:fixed;left:0;right:0;top:calc(50% + 28px);z-index:2147483647;text-align:center;color:#9fb0c2;font:800 9px/1.2 Arial,sans-serif;letter-spacing:.14em;visibility:visible!important}</style>
-<script defer src="/route-transition.js?release=20260824-standalone-stable"></script>
+<script defer src="/route-transition.js?release=20260828-handbook-tiles"></script>
 <style>
-:root{--navy:#081c33;--navy2:#0d2e51;--blue:#164f82;--gold:#ffd63d;--ink:#10253e;--muted:#63758a;--bg:#f3f6fa;--line:#d9e2ec;--white:#fff}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}button,a{font:inherit}.shell{min-height:100vh}.main{margin-left:0;min-height:100vh}.hero{background:linear-gradient(135deg,#0b2d52,#174f83);color:white;padding:40px clamp(22px,5vw,68px) 30px}.eyebrow{color:var(--gold);font-size:12px;font-weight:900;letter-spacing:.13em}.hero h1{font-size:clamp(36px,5vw,64px);line-height:.95;margin:10px 0 13px;max-width:850px}.hero p{max-width:780px;color:#dce8f5;font-size:17px;line-height:1.55}.quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}.quick button{border:1px solid #6e91b3;background:#0b2948;color:#fff;border-radius:999px;padding:9px 13px;font-weight:800;cursor:pointer}.quick button.active{background:var(--gold);border-color:var(--gold);color:#10253e}.content{max-width:1260px;margin:auto;padding:26px clamp(18px,4vw,48px) 70px}.search{display:flex;gap:9px;margin-bottom:20px}.search input{flex:1;border:1px solid #cbd7e3;border-radius:12px;padding:13px 15px;background:#fff;font-size:15px}.search button{border:0;border-radius:12px;background:var(--navy2);color:#fff;padding:0 18px;font-weight:850}.section{scroll-margin-top:20px;margin:0 0 28px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:12px}.section h2{margin:0;font-size:27px}.section-head p{margin:4px 0 0;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 7px 24px rgba(15,35,58,.055)}.card h3{margin:0 0 9px;color:#123b63;font-size:17px}.card p,.card li{font-size:13px;line-height:1.6;color:#40546a}.card ul{margin:7px 0 0;padding-left:19px}.callout{border-left:5px solid var(--gold);background:#fff8d9}.rank-groups{display:grid;gap:13px}.rank-box{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}.rank-box h3{margin:0 0 14px;font-size:14px;color:#174f83;letter-spacing:.08em}.ranks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.rank{border:1px solid #d9e4ef;border-radius:13px;padding:13px;text-align:center;background:#fbfdff}.insig{font-size:27px;color:#123b63;font-weight:900;min-height:38px}.rank b{display:block}.rank small{display:block;color:#65788e;margin-top:3px;font-size:11px}.rank p{font-size:11px;color:#63758a;line-height:1.4;margin:7px 0 0}.five{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:11px}.five .card{padding:16px}.five h3{font-size:15px}.chapter-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.chapter{background:#fff;border:1px solid var(--line);border-radius:13px;padding:14px}.chapter b{display:block}.chapter span{font-size:11px;color:#a77c00;font-weight:900}.chapter p{font-size:12px;color:#5e7186;line-height:1.45;margin:5px 0 0}.hidden-search{display:none!important}.footer{text-align:center;color:#6a7b8d;font-size:12px;padding-top:20px}@media(max-width:1050px){.five{grid-template-columns:repeat(2,1fr)}.ranks{grid-template-columns:repeat(2,1fr)}}@media(max-width:760px){.grid,.five,.chapter-grid,.ranks{grid-template-columns:1fr}.hero h1{font-size:40px}}
+:root{--hb-bg:#07111d;--hb-panel:#0c1827;--hb-panel2:#0f2033;--hb-line:#293b4e;--hb-text:#f5f7fb;--hb-muted:#a7b3c2;--hb-gold:#ffd63d;--hb-blue:#4f8fc7}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--hb-bg);color:var(--hb-text)}
+button,input,a{font:inherit}
+.hb-page{min-height:100vh;background:radial-gradient(circle at 83% 4%,rgba(30,71,108,.22),transparent 32%),linear-gradient(180deg,rgba(5,14,24,.15),rgba(5,14,24,.4))}
+.hb-wrap{max-width:1360px;margin:0 auto;padding:54px clamp(22px,4.5vw,64px) 72px}
+.hb-hero{position:relative;padding:0 0 28px}
+.hb-kicker{color:var(--hb-gold);font-size:14px;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
+.hb-title{margin:9px 0 8px;color:#fff;font-size:clamp(42px,5vw,72px);line-height:.96;letter-spacing:-.035em}
+.hb-subtitle{margin:0;color:#dce4ee;font-size:clamp(15px,1.45vw,18px);line-height:1.55;max-width:780px}
+.hb-mark{position:absolute;right:2%;top:-20px;color:rgba(125,148,171,.09);font-size:clamp(120px,15vw,210px);line-height:1;font-weight:900;user-select:none;pointer-events:none}
+.hb-search{position:relative;max-width:860px;margin:24px 0 30px}
+.hb-search-icon{position:absolute;left:17px;top:50%;transform:translateY(-50%);font-size:22px;color:#d8e2ec;pointer-events:none}
+.hb-search input{width:100%;height:56px;border:1px solid #34495f;border-radius:11px;background:#091522!important;color:#fff!important;padding:0 48px;font-size:16px;outline:none;box-shadow:0 10px 28px rgba(0,0,0,.12)}
+.hb-search input::placeholder{color:#8797aa!important}
+.hb-search input:focus{border-color:#5c82a5!important;box-shadow:0 0 0 3px rgba(79,143,199,.12)}
+.hb-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);display:none;border:0;background:transparent!important;color:var(--hb-muted)!important;width:38px;height:38px;border-radius:8px;cursor:pointer;font-size:20px}
+.hb-clear:hover{background:#102238!important;color:#fff!important}
+.hb-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.hb-tile{position:relative;display:flex;min-height:174px;flex-direction:column;justify-content:space-between;padding:22px;border:1px solid var(--hb-line);border-radius:13px;background:linear-gradient(180deg,rgba(13,27,43,.9),rgba(8,20,33,.94));color:var(--hb-text);text-decoration:none;box-shadow:0 14px 32px rgba(0,0,0,.13);transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;overflow:hidden}
+.hb-tile::after{content:'';position:absolute;inset:auto 0 0 0;height:2px;background:transparent;transition:background .18s ease}
+.hb-tile:hover,.hb-tile:focus-visible{transform:translateY(-3px);border-color:#6e5b19;background:linear-gradient(180deg,#102238,#0a1827);box-shadow:0 18px 38px rgba(0,0,0,.22);outline:none}
+.hb-tile:hover::after,.hb-tile:focus-visible::after{background:var(--hb-gold)}
+.hb-tile-top{display:flex;align-items:center;gap:14px}
+.hb-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:11px;background:#0a1b2c;border:1px solid #384a5e;color:var(--hb-gold);font-size:25px;font-weight:900;flex:0 0 auto}
+.hb-number{color:var(--hb-gold);font-size:25px;font-weight:900;letter-spacing:-.02em}
+.hb-tile h2{margin:16px 0 0;color:#fff;font-size:18px;line-height:1.25;letter-spacing:-.012em}
+.hb-arrow{align-self:flex-end;color:var(--hb-gold);font-size:28px;line-height:1;transition:transform .18s ease}
+.hb-tile:hover .hb-arrow,.hb-tile:focus-visible .hb-arrow{transform:translateX(4px)}
+.hb-empty{display:none;padding:28px 0;color:var(--hb-muted);font-size:15px}
+.hb-detail{display:none;max-width:980px;padding:0 0 10px}
+.hb-detail.active{display:block}
+.hb-back{display:inline-flex;align-items:center;gap:8px;border:0;background:transparent!important;color:var(--hb-gold)!important;padding:0;margin:0 0 24px;font-weight:850;cursor:pointer}
+.hb-detail-head{padding-bottom:22px;border-bottom:1px solid var(--hb-line)}
+.hb-detail-number{color:var(--hb-gold);font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.hb-detail h1{margin:7px 0 8px;color:#fff;font-size:clamp(34px,4vw,52px);letter-spacing:-.035em}
+.hb-detail-lead{margin:0;color:#cbd6e2;font-size:17px;line-height:1.6}
+.hb-topic-list{display:grid;gap:0;margin:20px 0 0;border-top:1px solid var(--hb-line)}
+.hb-topic{padding:19px 0;border-bottom:1px solid var(--hb-line)}
+.hb-topic h3{margin:0 0 7px;color:#fff;font-size:17px}
+.hb-topic p{margin:0;color:var(--hb-muted);font-size:14px;line-height:1.65;max-width:880px}
+.hb-topic a{color:#8cc0eb;font-weight:800;text-decoration:none}
+.hb-topic a:hover{text-decoration:underline}
+.hb-footer{max-width:1360px;margin:0 auto;padding:20px clamp(22px,4.5vw,64px) 28px;border-top:1px solid rgba(91,115,139,.22);color:#8999aa;font-size:12px;text-align:center}
+.hb-footer b{color:var(--hb-gold);font-weight:800}
+.hb-ranks-note{margin-top:22px;color:#b8c5d3;font-size:13px}
+.hb-ranks-note a{color:var(--hb-gold);font-weight:850;text-decoration:none}
+@media(max-width:1120px){.hb-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:820px){.hb-wrap{padding-top:34px}.hb-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.hb-tile{min-height:158px;padding:18px}.hb-mark{display:none}}
+@media(max-width:520px){.hb-grid{grid-template-columns:1fr}.hb-tile{min-height:142px}.hb-title{font-size:42px}.hb-search{margin-top:20px}}
 </style>
 <link rel="stylesheet" href="/dark-theme.css?v=109">
 </head>
-<body class="shell-loading standalone-loading"><div class="shell"><main class="main"><header class="hero"><div class="eyebrow">MD-803 · 2025–2026 CADET HANDBOOK</div><h1>Cadet Handbook</h1><p>A detailed, cadet-friendly reference for standards, expectations, ranks, leadership principles, uniform rules, recognition, and everyday MD-803 information.</p><div class="quick"><button data-go="start" class="active">Start Here</button><button data-go="conduct">Conduct</button><button data-go="uniforms">Uniforms</button><button data-go="ranks">Ranks & Info</button><button data-go="five">Cadet Essentials</button><button data-go="topics">All Topics</button></div></header><div class="content"><div class="search"><input id="search" placeholder="Search this handbook page…"><button id="searchBtn">Search</button></div><section class="section" id="start"><div class="section-head"><div><h2>Start Here</h2><p>The purpose and foundation of MD-803.</p></div></div><div class="grid"><article class="card callout"><h3>AFJROTC Mission</h3><p>Develop citizens of character dedicated to serving their nation and community.</p></article><article class="card"><h3>Cadet Responsibility</h3><p>The handbook is a day-to-day reference for the cadet corps.</p></article><article class="card"><h3>Cadet Code & Creed</h3><p>Cadets are expected to live with honesty, accountability, and the Air Force Core Values.</p></article></div></section><section class="section" id="conduct"><div class="section-head"><div><h2>Leadership, Courtesy & Conduct</h2><p>Standards apply in AFJROTC and beyond the classroom.</p></div></div><div class="grid"><article class="card"><h3>Lead by Example</h3><p>Show proper conduct and appearance, respect others, and develop leadership and self-discipline.</p></article><article class="card"><h3>Classroom Standards</h3><p>Be prompt, prepared, attentive, respectful, and follow flight procedures.</p></article><article class="card"><h3>Hazing & Misuse of Authority</h3><p>Hazing is prohibited. Cadet authority must be used responsibly and respectfully.</p></article></div></section><section class="section" id="uniforms"><div class="section-head"><div><h2>Uniform Wear & Appearance</h2><p>The uniform represents the United States Air Force and must be worn with pride.</p></div></div><div class="grid"><article class="card"><h3>Uniform Day</h3><p>The prescribed uniform is worn for the entire school day unless an instructor grants an exception.</p></article><article class="card"><h3>Grooming & Appearance</h3><p>Follow applicable grooming and appearance standards and keep the uniform neat and correct.</p></article><article class="card"><h3>Need Placement Help?</h3><p>Use the <a href="/uniform.html">Uniform Guide</a> for visual placement guidance.</p></article></div></section><section class="section" id="ranks"><div class="section-head"><div><h2>Ranks & Information</h2><p>The rank reference lives directly inside the handbook.</p></div></div><div class="rank-groups"><article class="rank-box"><h3>CADET ENLISTED RANKS</h3><div class="ranks"><div class="rank"><div class="insig">⌄</div><b>C/AB</b><small>Cadet Airman Basic</small></div><div class="rank"><div class="insig">⌄</div><b>C/Amn</b><small>Cadet Airman</small></div><div class="rank"><div class="insig">≪</div><b>C/A1C</b><small>Cadet Airman First Class</small></div><div class="rank"><div class="insig">≪</div><b>C/SrA</b><small>Cadet Senior Airman</small></div><div class="rank"><div class="insig">≪</div><b>C/SSgt</b><small>Cadet Staff Sergeant</small></div><div class="rank"><div class="insig">≪</div><b>C/TSgt</b><small>Cadet Technical Sergeant</small></div><div class="rank"><div class="insig">≪</div><b>C/MSgt</b><small>Cadet Master Sergeant</small></div><div class="rank"><div class="insig">≪</div><b>C/SMSgt / C/CMSgt</b><small>Senior / Chief Master Sergeant</small></div></div></article><article class="rank-box"><h3>CADET OFFICER RANKS</h3><div class="ranks"><div class="rank"><div class="insig">▮</div><b>C/2d Lt</b><small>Second Lieutenant</small></div><div class="rank"><div class="insig">▮</div><b>C/1st Lt</b><small>First Lieutenant</small></div><div class="rank"><div class="insig">▮▮</div><b>C/Capt</b><small>Captain</small></div><div class="rank"><div class="insig">◆</div><b>C/Maj</b><small>Major</small></div><div class="rank"><div class="insig">◆◆</div><b>C/Lt Col</b><small>Lieutenant Colonel</small></div><div class="rank"><div class="insig">◆◆◆</div><b>C/Col</b><small>Colonel</small></div></div></article></div></section><section class="section" id="five"><div class="section-head"><div><h2>Five Cadet Essentials</h2><p>Specific answers to common cadet questions.</p></div></div><div class="five"><article class="card"><h3>Aerospace & Leadership</h3><p>Citizenship, leadership, followership, communication, teamwork, military customs and courtesies, and air and space fundamentals.</p></article><article class="card"><h3>Community Service</h3><p>Community service is part of AFJROTC’s mission. Cadets should represent MD-803 professionally and document participation as directed.</p></article><article class="card"><h3>Fitness Standards</h3><p>Cadets are tested <strong>twice per school year</strong> in push-ups, sit-ups, and the one-mile run.</p></article><article class="card"><h3>Core Values</h3><p><strong>Integrity First. Service Before Self. Excellence In All We Do.</strong></p></article><article class="card"><h3>Mission & Objectives</h3><p>Develop citizens of character while building citizenship, service, responsibility, leadership, and self-discipline.</p></article></div></section><section class="section" id="recognition"><div class="section-head"><div><h2>Awards & Recognition</h2><p>Recognition is tied to achievement, leadership, service, academics, performance, and participation.</p></div></div><div class="grid"><article class="card"><h3>Ribbons & Medals</h3><p>Authorized awards recognize cadet achievement and service.</p></article><article class="card"><h3>Badges</h3><p>Only authorized badges and insignia may be worn.</p></article><article class="card"><h3>Shoulder Cords</h3><p>Authorized shoulder cords identify approved positions or activities.</p></article></div></section><section class="section" id="topics"><div class="section-head"><div><h2>Handbook Topics</h2><p>A quick map of the 2025–2026 MD-803 handbook.</p></div></div><div class="chapter-grid"><div class="chapter"><span>CHAPTER 1</span><b>Cadet Code, Creed, Mission, Goals & Objectives</b></div><div class="chapter"><span>CHAPTERS 2–5</span><b>Benefits, Admission, Transfer, Disenrollment & Reserve Cadets</b></div><div class="chapter"><span>CHAPTERS 6–7</span><b>Courtesy, Conduct, Behavior & Merit/Demerit System</b></div><div class="chapter"><span>CHAPTER 8</span><b>Uniform Wear, Dress & Appearance</b></div><div class="chapter"><span>CHAPTER 9</span><b>Awards & Decorations</b></div><div class="chapter"><span>CHAPTER 10</span><b>Cadet Position Descriptions</b></div><div class="chapter"><span>CHAPTERS 11–12</span><b>Promotions/Demotions & Shoulder Cords</b></div><div class="chapter"><span>APPENDICES</span><b>Acronyms, Drill Evaluation, Activities & Things to Know</b></div></div></section><div class="footer">Gwynn Park High School AFJROTC · MD-803 · Cadet Handbook 2025–2026</div></div></main></div><script>document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-go]').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById(b.dataset.go)?.scrollIntoView({behavior:'smooth',block:'start'})});function runSearch(){const q=document.getElementById('search').value.trim().toLowerCase();document.querySelectorAll('.section').forEach(s=>s.classList.toggle('hidden-search',q&&!s.innerText.toLowerCase().includes(q)))}document.getElementById('searchBtn').onclick=runSearch;document.getElementById('search').addEventListener('keydown',e=>{if(e.key==='Enter')runSearch()});</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/handbook-live.js?v=110"></script></body></html>
+<body class="shell-loading standalone-loading">
+<div class="shell">
+<main class="main">
+<div class="hb-page">
+  <div class="hb-wrap">
+    <section id="hbHome">
+      <header class="hb-hero">
+        <div class="hb-kicker">MD-803 &nbsp;•&nbsp; 2025–2026</div>
+        <h1 class="hb-title">Cadet Handbook</h1>
+        <p class="hb-subtitle">Standards, policies, leadership, and resources for every cadet.</p>
+        <div class="hb-mark" aria-hidden="true">✦</div>
+      </header>
+
+      <div class="hb-search" role="search">
+        <span class="hb-search-icon" aria-hidden="true">⌕</span>
+        <input id="hbSearch" type="search" autocomplete="off" placeholder="Search the handbook..." aria-label="Search handbook sections">
+        <button id="hbClear" class="hb-clear" type="button" aria-label="Clear handbook search">×</button>
+      </div>
+
+      <div id="hbGrid" class="hb-grid" aria-label="Handbook sections">
+        <a class="hb-tile" href="?section=foundation" data-section="foundation" data-search="cadet foundation code creed mission objectives core values">
+          <div><div class="hb-tile-top"><span class="hb-icon" aria-hidden="true">✦</span><span class="hb-number">01</span></div><h2>Cadet Foundation</h2></div><span class="hb-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="hb-tile" href="?section=enrollment" data-section="enrollment" data-search="benefits enrollment admission transfer disenrollment reserve cadets">
+          <div><div class="hb-tile-top"><span class="hb-icon" aria-hidden="true">⊕</span><span class="hb-number">02</span></div><h2>Benefits &amp; Enrollment</h2></div><span class="hb-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="hb-tile" href="?section=conduct" data-section="conduct" data-search="standards conduct courtesy behavior hazing respect">
+          <div><div class="hb-tile-top"><span class="hb-icon" aria-hidden="true">⚖</span><span class="hb-number">03</span></div><h2>Standards of Conduct</h2></div><span class="hb-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="hb-tile" href="?section=merits" data-section="merits" data-search="merits demerits discipline accountability recognition system procedures">
+          <div><div class="hb-tile-top"><span class="hb-icon" aria-hidden="true">★</span><span class="hb-number">04</span></div><h2>Merits &amp; Demerits</h2></div><span class="hb-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="hb-tile" href="?section=uniforms" data-section="uniforms" data-search="uniform standards dress appearance grooming wear waiver service coat lightweight jacket">
+          <div><div class="hb-tile-top"><span class="hb-icon" aria-hidden="true">◆</span><span class="hb-number">05</span></div><h2>Uniform Standards</h2></div><span class="hb-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="hb-tile" href="?section=awards" data-section="awards" data-search="awards decorations ribbons medals badges recognition">
+          <div><div class="hb-tile-top"><span class="hb-icon" aria-hidden="true">✪</span><span class="hb-number">06</span></div><h2>Awards &amp; Decorations</h2></div><span class="hb-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="hb-tile" href="?section=leadership" data-section="leadership" data-search="leadership positions position descriptions responsibilities chain command staff">
+          <div><div class="hb-tile-top"><span class="hb-icon" aria-hidden="true">♚</span><span class="hb-number">07</span></div><h2>Leadership Positions</h2></div><span class="hb-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="hb-tile" href="?section=promotions" data-section="promotions" data-search="promotions demotions rank advancement reduction ranks info">
+          <div><div class="hb-tile-top"><span class="hb-icon" aria-hidden="true">≡</span><span class="hb-number">08</span></div><h2>Promotions &amp; Demotions</h2></div><span class="hb-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="hb-tile" href="?section=cords" data-section="cords" data-search="shoulder cords cord requirements meanings positions activities">
+          <div><div class="hb-tile-top"><span class="hb-icon" aria-hidden="true">◯</span><span class="hb-number">09</span></div><h2>Shoulder Cords</h2></div><span class="hb-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="hb-tile" href="?section=drill" data-section="drill" data-search="drill flight evaluation 30 step sequence commands ceremonies">
+          <div><div class="hb-tile-top"><span class="hb-icon" aria-hidden="true">⌖</span><span class="hb-number">10</span></div><h2>Drill</h2></div><span class="hb-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="hb-tile" href="?section=activities" data-section="activities" data-search="extracurricular activities competitions teams opportunities events">
+          <div><div class="hb-tile-top"><span class="hb-icon" aria-hidden="true">♜</span><span class="hb-number">11</span></div><h2>Extracurricular Activities</h2></div><span class="hb-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="hb-tile" href="?section=resources" data-section="resources" data-search="cadet resources acronyms abbreviations things to know uniform waiver appendix forms">
+          <div><div class="hb-tile-top"><span class="hb-icon" aria-hidden="true">▰</span><span class="hb-number">12</span></div><h2>Cadet Resources</h2></div><span class="hb-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+      <div id="hbEmpty" class="hb-empty">No handbook sections match that search.</div>
+      <p class="hb-ranks-note"><a href="/ranks.html">Ranks &amp; Info</a> remains available as its own site section.</p>
+    </section>
+
+    <section id="hbDetail" class="hb-detail" aria-live="polite">
+      <button id="hbBack" class="hb-back" type="button">← Back to handbook</button>
+      <div class="hb-detail-head">
+        <div id="hbDetailNumber" class="hb-detail-number"></div>
+        <h1 id="hbDetailTitle"></h1>
+        <p id="hbDetailLead" class="hb-detail-lead"></p>
+      </div>
+      <div id="hbTopics" class="hb-topic-list"></div>
+    </section>
+  </div>
+  <footer class="hb-footer">Gwynn Park High School AFJROTC MD-803 &nbsp;•&nbsp; <b>Aim High</b> &nbsp;•&nbsp; <b>Fly–Fight–Win</b></footer>
+</div>
+</main>
+</div>
+
+<script>
+const handbookSections={
+  foundation:{number:'Section 01',title:'Cadet Foundation',lead:'The foundation of MD-803: the Cadet Code, Cadet Creed, AFJROTC mission, and program objectives.',topics:[
+    ['AFJROTC Mission','Develop citizens of character dedicated to serving their nation and community.'],
+    ['Cadet Code & Creed','The handbook establishes the standards and principles cadets are expected to understand and represent.'],
+    ['Mission & Objectives','AFJROTC develops citizenship, responsibility, leadership, service, and self-discipline.'],
+    ['Core Values','Integrity First. Service Before Self. Excellence In All We Do.']
+  ]},
+  enrollment:{number:'Section 02',title:'Benefits & Enrollment',lead:'Program benefits and the handbook rules covering cadet participation and enrollment status.',topics:[
+    ['AFJROTC Benefits','Information on the opportunities, skills, recognition, and experiences available through AFJROTC.'],
+    ['Admission & Eligibility','Requirements for becoming and remaining an AFJROTC cadet are covered in the official handbook.'],
+    ['Transfer & Disenrollment','The handbook explains how transfer status and disenrollment are handled.'],
+    ['Reserve Cadets','Reserve cadet status and expectations are included in this section of the handbook.']
+  ]},
+  conduct:{number:'Section 03',title:'Standards of Conduct',lead:'Courtesy, conduct, behavior, respect, and the standards expected of MD-803 cadets.',topics:[
+    ['Courtesy','Cadets are expected to demonstrate proper military courtesy, respect, and professionalism.'],
+    ['Conduct & Behavior','Cadets should be prompt, prepared, accountable, and respectful in class, at events, and while representing the unit.'],
+    ['Hazing','Hazing is prohibited. Cadet authority must be used responsibly and respectfully.']
+  ]},
+  merits:{number:'Section 04',title:'Merits & Demerits',lead:'MD-803 accountability, recognition, and the unit merit/demerit system.',topics:[
+    ['Merit System','Merits recognize positive conduct, performance, service, and contributions to the unit.'],
+    ['Demerit System','Demerits document conduct or performance that does not meet unit expectations.'],
+    ['Accountability','Cadets are responsible for understanding current procedures and following instructor guidance.']
+  ]},
+  uniforms:{number:'Section 05',title:'Uniform Standards',lead:'Uniform wear, dress, appearance, grooming, and related handbook requirements.',topics:[
+    ['Uniform Wear','The prescribed uniform is worn as directed by instructors and must be kept neat, correct, and serviceable.'],
+    ['Dress & Appearance','Cadets are responsible for meeting applicable dress and appearance standards.'],
+    ['Grooming','Follow current grooming standards and instructor guidance for uniform days and official activities.'],
+    ['Uniform Guide','Need placement help? Open the <a href="/uniform.html">Uniform Guide</a> for the site’s visual uniform reference.']
+  ]},
+  awards:{number:'Section 06',title:'Awards & Decorations',lead:'Recognition available to cadets for achievement, leadership, academics, service, and participation.',topics:[
+    ['Awards & Decorations','Authorized awards recognize cadet achievement and service.'],
+    ['Ribbons & Medals','Only authorized decorations may be worn and they must be placed correctly.'],
+    ['Badges & Recognition','The handbook identifies approved badges, recognition, and wear guidance.']
+  ]},
+  leadership:{number:'Section 07',title:'Leadership Positions',lead:'Cadet position descriptions, responsibilities, and expectations for unit leadership.',topics:[
+    ['Position Descriptions','Each cadet leadership position carries specific duties and responsibilities.'],
+    ['Leadership Responsibility','Rank and position represent responsibility, accountability, and service to the unit.'],
+    ['Chain of Command','Cadets should use the proper chain of command and know who is responsible for unit functions.']
+  ]},
+  promotions:{number:'Section 08',title:'Promotions & Demotions',lead:'Rank advancement, reductions, and the responsibilities that come with cadet rank.',topics:[
+    ['Promotions','Promotion is tied to unit requirements, performance, conduct, participation, and leadership expectations.'],
+    ['Demotions','The handbook explains circumstances and procedures related to reductions in cadet rank.'],
+    ['Ranks & Info','The separate <a href="/ranks.html">Ranks & Info</a> section stays available for rank references and cadet rank information.']
+  ]},
+  cords:{number:'Section 09',title:'Shoulder Cords',lead:'Authorized shoulder cords and the positions or activities they identify.',topics:[
+    ['Authorized Cords','Shoulder cords are worn only when authorized for an approved position, team, or activity.'],
+    ['Wear & Meaning','The handbook explains cord authorization and what each approved cord represents.']
+  ]},
+  drill:{number:'Section 10',title:'Drill',lead:'Flight drill evaluation and the MD-803 30-step drill sequence.',topics:[
+    ['Flight Drill Evaluation','Cadets are evaluated on proper drill procedures, teamwork, command response, and execution.'],
+    ['30-Step Drill Sequence','Appendix B contains the 30-step drill sequence used as a cadet reference.'],
+    ['Practice','Use the site’s drill resources and quiz tools to practice commands and sequence order.']
+  ]},
+  activities:{number:'Section 11',title:'Extracurricular Activities',lead:'Unit activities, teams, competitions, service opportunities, and other AFJROTC involvement.',topics:[
+    ['Activities & Teams','The handbook appendix covers extracurricular opportunities available through the unit.'],
+    ['Participation','Cadets representing MD-803 at activities are expected to follow unit standards and instructor direction.']
+  ]},
+  resources:{number:'Section 12',title:'Cadet Resources',lead:'Appendices, abbreviations, important information, and quick-reference material from the handbook.',topics:[
+    ['Appendix A — Abbreviations & Acronyms','Common AFJROTC abbreviations and acronyms are collected here for quick reference.'],
+    ['Appendix B — Drill Evaluation','Flight drill evaluation information and the 30-step drill sequence.'],
+    ['Appendix C — Extracurricular Activities','Unit extracurricular activities and participation information.'],
+    ['Appendix D — Things to Know','Additional cadet reference information, including the uniform waiver material identified in the handbook.']
+  ]}
+};
+
+const home=document.getElementById('hbHome');
+const detail=document.getElementById('hbDetail');
+const detailNumber=document.getElementById('hbDetailNumber');
+const detailTitle=document.getElementById('hbDetailTitle');
+const detailLead=document.getElementById('hbDetailLead');
+const topics=document.getElementById('hbTopics');
+const search=document.getElementById('hbSearch');
+const clear=document.getElementById('hbClear');
+const empty=document.getElementById('hbEmpty');
+
+function showHome(updateUrl=true){
+  detail.classList.remove('active');home.style.display='block';
+  if(updateUrl)history.pushState({},'',location.pathname);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showSection(key,updateUrl=true){
+  const section=handbookSections[key];if(!section)return showHome(updateUrl);
+  detailNumber.textContent=section.number;detailTitle.textContent=section.title;detailLead.textContent=section.lead;
+  topics.innerHTML=section.topics.map(([title,body])=>`<article class="hb-topic"><h3>${title}</h3><p>${body}</p></article>`).join('');
+  home.style.display='none';detail.classList.add('active');
+  if(updateUrl)history.pushState({section:key},'',`?section=${encodeURIComponent(key)}`);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function filterTiles(){
+  const q=search.value.trim().toLowerCase();let visible=0;
+  document.querySelectorAll('.hb-tile').forEach(tile=>{const match=!q||tile.dataset.search.includes(q)||tile.innerText.toLowerCase().includes(q);tile.style.display=match?'flex':'none';if(match)visible++});
+  clear.style.display=q?'block':'none';empty.style.display=visible?'none':'block';
+}
+
+document.querySelectorAll('.hb-tile').forEach(tile=>tile.addEventListener('click',e=>{e.preventDefault();showSection(tile.dataset.section)}));
+document.getElementById('hbBack').addEventListener('click',()=>showHome());
+search.addEventListener('input',filterTiles);
+clear.addEventListener('click',()=>{search.value='';filterTiles();search.focus()});
+window.addEventListener('popstate',()=>{const key=new URLSearchParams(location.search).get('section');key?showSection(key,false):showHome(false)});
+const initialSection=new URLSearchParams(location.search).get('section');if(initialSection)showSection(initialSection,false);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/handbook-live.js?v=20260828-tiles"></script>
+</body>
+</html>
