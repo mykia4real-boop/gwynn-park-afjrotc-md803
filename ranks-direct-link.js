@@ -2,31 +2,49 @@
   if(window.__afjrotcRanksRouteFix)return;
   window.__afjrotcRanksRouteFix=true;
 
-  function cleanLegacy(){
+  const onRanksPage=()=>location.pathname.endsWith('/ranks.html');
+
+  function makeRanksButton(nav,legacy=false){
+    const b=document.createElement('button');
+    b.type='button';
+    if(legacy)b.dataset.public='ranks';
+    else b.dataset.shellPage='ranks';
+    b.className='ranks-direct-link';
+    if(!legacy&&document.body.classList.contains('account-shell')){
+      const icon=document.createElement('span');icon.className='shell-icon';icon.textContent='☆';
+      const label=document.createElement('span');label.textContent='Ranks & Info';
+      b.append(icon,label);
+    }else b.textContent='Ranks & Info';
+    return b;
+  }
+
+  function ensureRanksVisible(){
+    document.querySelectorAll('.site-shell-nav').forEach(nav=>{
+      let b=nav.querySelector('[data-shell-page="ranks"]');
+      if(!b){b=makeRanksButton(nav,false);nav.appendChild(b)}
+      if(onRanksPage())b.classList.add('active');
+      else b.classList.remove('active');
+    });
+
     document.querySelectorAll('.public-nav,#mobileNav').forEach(nav=>{
-      [...nav.querySelectorAll('button,a')].forEach(el=>{
-        const text=(el.textContent||'').trim().toLowerCase();
-        if(el.dataset?.public==='ranks'||text==='ranks & info'||text==='ranks and info'||el.classList.contains('ranks-direct-link')) el.remove();
-      });
+      let b=nav.querySelector('[data-public="ranks"],.ranks-direct-link');
+      if(!b){b=makeRanksButton(nav,true);nav.appendChild(b)}
+      b.classList.toggle('active',onRanksPage());
     });
   }
 
-  function syncActive(){
-    if(!location.pathname.endsWith('/handbook.html')||location.hash!=='#ranks')return;
-    document.querySelectorAll('.site-shell-nav [data-shell-page]').forEach(el=>el.classList.toggle('active',el.dataset.shellPage==='ranks'));
-  }
-
   document.addEventListener('click',e=>{
-    const ranks=e.target.closest('.site-shell-nav [data-shell-page="ranks"]');
+    const ranks=e.target.closest('[data-shell-page="ranks"],[data-public="ranks"],.ranks-direct-link');
     if(!ranks)return;
     e.preventDefault();
     e.stopImmediatePropagation();
-    location.href='/handbook.html#ranks';
+    if(!onRanksPage())location.href='/ranks.html';
   },true);
 
-  const observer=new MutationObserver(()=>{cleanLegacy();syncActive()});
-  observer.observe(document.body,{childList:true,subtree:true});
-  cleanLegacy();syncActive();
-  setTimeout(()=>{cleanLegacy();syncActive()},150);
-  setTimeout(()=>{cleanLegacy();syncActive()},700);
+  const observer=new MutationObserver(()=>ensureRanksVisible());
+  observer.observe(document.documentElement,{childList:true,subtree:true});
+  ensureRanksVisible();
+  setTimeout(ensureRanksVisible,150);
+  setTimeout(ensureRanksVisible,700);
+  setTimeout(ensureRanksVisible,1600);
 })();
